@@ -87,3 +87,6 @@ Create a new branch for your feature: git checkout -b feature/AmazingFeature.
 Commit your changes: git commit -m 'Add some AmazingFeature'.
 Push to the branch: git push origin feature/AmazingFeature.
 Open a pull request.
+
+License
+This project is licensed under the MIT License. See LICENSE for details.
