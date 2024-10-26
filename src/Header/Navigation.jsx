@@ -6,7 +6,7 @@ const Navbar = () => {
     return (
         <nav className="bp5-navbar">
             <div className="bp5-navbar-group bp5-align-left">
-                <div className="bp5-navbar-heading">Blueprint</div>
+                <div className="bp5-navbar-heading">MoodGify</div>
                 {/* <input
                     className="bp5-input"
                     placeholder="Search files..."

@@ -1,0 +1,17 @@
+.bp5-callout {
+    // Optional: Add any custom styles for the callout component here
+    padding: 20px;
+    background-color: #f9f9f9; // Customize the background if needed
+    border-left: 4px solid #1781d8;
+
+    // Style for modifier classes
+    &.custom-modifier {
+        border-left-color: #e91e63; // Example: custom border color for the modifier
+        background-color: #ffe4e1;
+    }
+}
+
+.bp5-heading {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
