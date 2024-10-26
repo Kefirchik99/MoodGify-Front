@@ -1,16 +1,18 @@
 import './App.scss'
+import './styles/main.scss';
+import Header from './Header'
+import "@blueprintjs/core/lib/css/blueprint.css";
 // import Container from 'react-bootstrap/Container';
 // import Header from './Header';
 // import Body from './Body';
 // import Footer from './Footer';
-import Header from './Header'
-import "@blueprintjs/core/lib/css/blueprint.css";
+
 
 
 function App() {
 
   return (
-    <div>
+    <div className=''>
       <Header />
       {/* <Body />
       <Footer /> */}

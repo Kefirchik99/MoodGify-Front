@@ -1,5 +1,6 @@
 // import React from "react";
 import "@blueprintjs/core/lib/css/blueprint.css";
+import '../styles/Navigation.scss';
 
 const Navbar = () => {
     return (
