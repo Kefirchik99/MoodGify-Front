@@ -1,0 +1,9 @@
+@import './variables';
+@import './reset';
+@import './typography';
+@import "@blueprintjs/core/lib/css/blueprint.css";
+@import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+
+// Additional imports for components
+@import './Navigation';
+@import './MainPage.scss'
