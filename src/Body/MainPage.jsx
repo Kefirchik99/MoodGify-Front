@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { InputGroup, Button, Card, Dialog } from '@blueprintjs/core';
 import '../styles/MainPage.scss';
