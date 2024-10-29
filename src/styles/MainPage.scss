@@ -3,39 +3,44 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 
     .mood-input {
         width: 100%;
-        max-width: 500px;
+        min-width: 600px;
+        max-width: 600px;
         margin-bottom: 20px;
     }
 
     .gif-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
+        grid-template-columns: repeat(6, 1fr); // Forces 6 GIFs per row
+        gap: 10px;
         width: 100%;
-        max-width: 1200px;
         margin-top: 20px;
     }
 
-    .gif-card {
+    .gif-container {
+        cursor: pointer;
         overflow: hidden;
-        border-radius: 8px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 4px;
+        transition: transform 0.3s ease;
 
         &:hover {
             transform: scale(1.05);
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .gif-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
     }
 
+    .gif-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    // Styling for the dialog when a GIF is selected
     .bp5-dialog-body .gif-large {
         max-width: 100%;
         border-radius: 8px;

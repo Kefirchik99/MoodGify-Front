@@ -1,19 +1,18 @@
 @import './variables';
 
 .bp5-navbar {
-    position: fixed; // Keep it fixed to the top
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100vw; // Full viewport width
-    background-color: $background-color; // Assuming you have a variable for background color
+    width: 100%; // Change from 100vw to 100%
+    background-color: $background-color;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Optional shadow for definition
-    z-index: 10; // Keep navbar on top of other content
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
 }
-
 
 .bp5-navbar-heading {
     font-weight: bold;

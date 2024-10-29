@@ -7,7 +7,6 @@
     box-sizing: border-box;
 }
 
-/* Ensure the root and body elements take up the full viewport height */
 html,
 body,
 #root {
@@ -16,77 +15,56 @@ body,
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
-    /* Smooth scrolling for a better user experience */
     -webkit-font-smoothing: antialiased;
-    /* Improves font rendering in webkit browsers */
+    display: flex;
+    justify-content: center; // Center horizontally
+    align-items: flex-start; // Align content to the top
 }
 
-/* Typography-related resets */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    /* Fallback font stack */
     font-size: 16px;
-    /* Base font size */
     line-height: 1.6;
     color: #333;
-    /* Neutral text color */
     background-color: #fff;
-    /* Default background color */
 }
 
-/* Anchor link reset */
 a {
     text-decoration: none;
     color: inherit;
-    /* Ensures links inherit color from parent */
 }
 
-/* List style reset */
 ul,
 ol {
     list-style: none;
 }
 
-/* Image and media resets */
 img,
 video {
     max-width: 100%;
-    /* Ensure responsive media */
     height: auto;
     display: block;
 }
 
-/* Button and input resets */
 button,
 input,
 select,
 textarea {
     font-family: inherit;
-    /* Inherit font settings */
     font-size: inherit;
     color: inherit;
     background: none;
     border: none;
     outline: none;
     appearance: none;
-    /* Removes default styling in some browsers */
 }
 
-/* Set default focus styles for accessibility */
 :focus {
     outline: 2px solid #007acc;
-    /* Use your brand color for focus */
     outline-offset: 2px;
 }
 
-/* Table resets */
 table {
     border-collapse: collapse;
     border-spacing: 0;
-}
-
-/* CSS Variables (Optional) */
-:root {
-    --navbar-height: 60px;
-    /* Optional: Use for consistent layout padding */
 }
