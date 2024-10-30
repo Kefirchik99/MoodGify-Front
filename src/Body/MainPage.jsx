@@ -1,7 +1,6 @@
-
-
 import React, { useState } from 'react';
-import { InputGroup, Button, Card, Dialog } from '@blueprintjs/core';
+import { InputGroup, Button, Dialog } from '@blueprintjs/core';
+import { fetchGifsByMood } from '../services/api';
 import '../styles/MainPage.scss';
 
 const MainPage = () => {
@@ -11,8 +10,17 @@ const MainPage = () => {
 
     const handleMoodChange = (event) => setMood(event.target.value);
 
-    const handleSearch = () => {
-        // Fetch GIFs based on mood
+    const handleSearch = async () => {
+        if (mood.trim() !== '') {
+            const results = await fetchGifsByMood(mood);
+            setGifs(results);
+        }
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
     };
 
     const openGifDialog = (gif) => setSelectedGif(gif);
@@ -20,37 +28,33 @@ const MainPage = () => {
 
     return (
         <div className="mood-to-gif">
-            {/* Mood Input Section */}
             <div className="mood-input">
                 <InputGroup
-                    leftIcon="mood"
+                    leftIcon="emoji"
                     placeholder="Enter your mood..."
                     onChange={handleMoodChange}
+                    onKeyDown={handleKeyDown}
                     value={mood}
                     rightElement={<Button text="Search" onClick={handleSearch} />}
                 />
             </div>
 
-            {/* GIF Display Grid */}
             <div className="gif-grid">
                 {gifs.map((gif) => (
-                    <Card
+                    <div
                         key={gif.id}
-                        className="gif-card"
-                        interactive
-                        elevation={2}
+                        className="gif-container"
                         onClick={() => openGifDialog(gif)}
                     >
-                        <img src={gif.url} alt={gif.title} className="gif-image" />
-                    </Card>
+                        <img src={gif.images.fixed_height.url} alt={gif.title} className="gif-image" />
+                    </div>
                 ))}
             </div>
 
-            {/* GIF Details Modal */}
             {selectedGif && (
                 <Dialog isOpen={true} onClose={closeGifDialog} title={selectedGif.title}>
                     <div className="bp5-dialog-body">
-                        <img src={selectedGif.url} alt={selectedGif.title} className="gif-large" />
+                        <img src={selectedGif.images.original.url} alt={selectedGif.title} className="gif-large" />
                         <p>Additional GIF details go here.</p>
                     </div>
                 </Dialog>
