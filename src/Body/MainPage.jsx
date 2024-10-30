@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { InputGroup, Button, Dialog } from '@blueprintjs/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { fetchGifsByMood } from '../services/api';
 import '../styles/MainPage.scss';
 
@@ -7,6 +9,7 @@ const MainPage = () => {
     const [mood, setMood] = useState('');
     const [gifs, setGifs] = useState([]);
     const [selectedGif, setSelectedGif] = useState(null);
+    const [addedGifs, setAddedGifs] = useState([]); // Track added GIFs by ID
 
     const handleMoodChange = (event) => setMood(event.target.value);
 
@@ -26,6 +29,13 @@ const MainPage = () => {
     const openGifDialog = (gif) => setSelectedGif(gif);
     const closeGifDialog = () => setSelectedGif(null);
 
+    // Toggle GIF added status
+    const handleAddClick = (gifId) => {
+        setAddedGifs((prevAddedGifs) =>
+            prevAddedGifs.includes(gifId) ? prevAddedGifs : [...prevAddedGifs, gifId]
+        );
+    };
+
     return (
         <div className="mood-to-gif">
             <div className="mood-input">
@@ -41,12 +51,18 @@ const MainPage = () => {
 
             <div className="gif-grid">
                 {gifs.map((gif) => (
-                    <div
-                        key={gif.id}
-                        className="gif-container"
-                        onClick={() => openGifDialog(gif)}
-                    >
+                    <div key={gif.id} className="gif-container">
                         <img src={gif.images.fixed_height.url} alt={gif.title} className="gif-image" />
+                        <button
+                            className="add-button"
+                            title={addedGifs.includes(gif.id) ? "Added to mood" : "Add to current mood"}
+                            onClick={() => handleAddClick(gif.id)}
+                        >
+                            <FontAwesomeIcon icon={addedGifs.includes(gif.id) ? faCheck : faPlus} />
+                        </button>
+                        {addedGifs.includes(gif.id) && (
+                            <span className="added-text">Added to mood</span>
+                        )}
                     </div>
                 ))}
             </div>
