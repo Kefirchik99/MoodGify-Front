@@ -15,8 +15,20 @@
 }
 
 .bp5-navbar-heading {
+    text-decoration: none !important;
+    /* Removes underline */
+    color: #3D5AFE;
+    /* Set to your desired color */
     font-weight: bold;
-    font-size: 1.2rem;
+    /* Optional: make it bold */
+    font-size: 1.5rem;
+    /* Optional: adjust font size */
+}
+
+.bp5-navbar-heading a {
+    color: inherit;
+    /* Inherit color from .bp5-navbar-heading */
+    text-decoration: none;
 }
 
 .bp5-button {

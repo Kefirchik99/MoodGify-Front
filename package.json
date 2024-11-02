@@ -12,10 +12,15 @@
   "dependencies": {
     "@blueprintjs/core": "^5.13.1",
     "@blueprintjs/icons": "^5.13.0",
+    "@blueprintjs/popover2": "^2.1.11",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.7.7",
     "firebase": "^11.0.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
