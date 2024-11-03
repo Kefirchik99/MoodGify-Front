@@ -1,0 +1,64 @@
+.profile-page {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .error-message {
+        color: red;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .success-message {
+        color: green;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .login-form {
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+    }
+
+    .extra-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-bottom: 17px; // Adds spacing between the two links
+        }
+    }
+
+    .terms-divider {
+        margin: 20px 0; // Adds spacing for the divider
+    }
+
+    .terms {
+        text-align: center;
+        margin-top: 15px;
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    }
+}
