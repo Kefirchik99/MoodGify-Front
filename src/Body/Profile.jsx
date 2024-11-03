@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import { InputGroup, Button, Divider } from '@blueprintjs/core'; // Add Divider
-import { loginWithEmail } from '../services/firebaseAuth'; // Firebase function for login
-import { Link } from 'react-router-dom'; // Link for navigation
-import "../styles/Profile.scss"; // Ensure you create styling if needed
-import { sendEmailVerification } from 'firebase/auth'; // Import to resend email verification
+import { InputGroup, Button, Divider } from '@blueprintjs/core';
+import { loginWithEmail } from '../services/firebaseAuth';
+import { sendEmailVerification } from 'firebase/auth';
+import { Link } from 'react-router-dom';
+import "../styles/Profile.scss";
 
 const Profile = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState(''); // Message for successful actions
+    const [successMessage, setSuccessMessage] = useState('');
+    const [user, setUser] = useState(null); // Track the user state
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setErrorMessage(''); // Clear previous errors
-        setSuccessMessage(''); // Clear previous success messages
+        setErrorMessage('');
+        setSuccessMessage('');
 
         if (email === '' || password === '') {
             setErrorMessage('Please enter both email and password.');
@@ -22,27 +23,29 @@ const Profile = () => {
         }
 
         try {
-            const user = await loginWithEmail(email, password);
+            const loggedInUser = await loginWithEmail(email, password);
 
             // Check if the email is verified
-            if (!user.emailVerified) {
+            if (!loggedInUser.emailVerified) {
                 setErrorMessage('Your email is not verified. Please verify your email.');
+                setUser(loggedInUser); // Store the user so we can resend the verification email
                 return;
             }
 
-            setErrorMessage(''); // Clear error if successful
-            console.log("Logged in user:", user);
+            setErrorMessage('');
+            console.log("Logged in user:", loggedInUser);
         } catch (error) {
-            setErrorMessage(error.message); // Show any errors from Firebase
+            setErrorMessage(error.message);
         }
     };
 
-    // Function to resend the email verification
+    // Resend email verification
     const handleResendVerification = async () => {
         try {
-            const user = await loginWithEmail(email, password);
-            await sendEmailVerification(user); // Send verification email
-            setSuccessMessage('Verification email has been resent. Please check your inbox.');
+            if (user) {
+                await sendEmailVerification(user); // Send the verification email
+                setSuccessMessage('Verification email has been resent. Please check your inbox.');
+            }
         } catch (error) {
             setErrorMessage('Failed to resend verification email.');
         }
@@ -85,7 +88,7 @@ const Profile = () => {
                 <Button type="submit" className="btn-login" intent="primary" text="Sign In" fill />
             </form>
 
-            {/* Button to resend verification email if not verified */}
+            {/* Show button to resend verification email if needed */}
             {errorMessage === 'Your email is not verified. Please verify your email.' && (
                 <Button intent="warning" onClick={handleResendVerification} text="Resend Verification Email" />
             )}
@@ -95,7 +98,6 @@ const Profile = () => {
                 <Link to="/register" className="register-link">New here? Register</Link>
             </div>
 
-            {/* Add Divider here */}
             <Divider className="terms-divider" />
 
             <div className="terms">
