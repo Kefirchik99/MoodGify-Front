@@ -3,6 +3,7 @@ import { InputGroup, Button, Divider } from '@blueprintjs/core';
 import { loginWithEmail } from '../services/firebaseAuth';
 import { sendEmailVerification } from 'firebase/auth';
 import { Link } from 'react-router-dom';
+import { getErrorMessage } from '../services/errorMessages'; // Import error messages
 import "../styles/Profile.scss";
 
 const Profile = () => {
@@ -33,9 +34,10 @@ const Profile = () => {
             }
 
             setErrorMessage('');
+            setSuccessMessage('Login successful!');
             console.log("Logged in user:", loggedInUser);
         } catch (error) {
-            setErrorMessage(error.message);
+            setErrorMessage(getErrorMessage(error.code)); // Use the centralized error handler
         }
     };
 
@@ -45,9 +47,10 @@ const Profile = () => {
             if (user) {
                 await sendEmailVerification(user); // Send the verification email
                 setSuccessMessage('Verification email has been resent. Please check your inbox.');
+                setErrorMessage('');
             }
         } catch (error) {
-            setErrorMessage('Failed to resend verification email.');
+            setErrorMessage(getErrorMessage(error.code)); // Handle errors during verification
         }
     };
 

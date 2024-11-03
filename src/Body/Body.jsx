@@ -8,7 +8,7 @@ import Settings from './Settings';
 import Register from './Register';
 import ForgotPwd from './ForgotPwd';
 import Terms from './Terms';
-import PrivacyPolicy from './ProvacyPolicy';
+import PrivacyPolicy from './PrivacyPolicy';
 
 
 const Body = () => {

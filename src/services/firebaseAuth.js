@@ -1,8 +1,7 @@
-import { auth } from '../firebase'; // Import the initialized auth instance
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+// Import the initialized auth instance from firebase.js
+import { auth } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from "firebase/auth";
 
-
-const auth = getAuth();
 // Function to register a new user
 export const registerWithEmail = async (email, password) => {
     try {
@@ -21,9 +20,6 @@ export const registerWithEmail = async (email, password) => {
 };
 
 // Function to log in an existing user
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-// Function to log in an existing user and check if their email is verified
 export const loginWithEmail = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -40,8 +36,7 @@ export const loginWithEmail = async (email, password) => {
     }
 };
 
-
-// Function to send password reset email
+// Function to send a password reset email
 export const sendPasswordReset = async (email) => {
     try {
         await sendPasswordResetEmail(auth, email);
@@ -50,4 +45,3 @@ export const sendPasswordReset = async (email) => {
         throw new Error(error.message);
     }
 };
-
