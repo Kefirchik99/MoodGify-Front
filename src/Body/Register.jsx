@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { InputGroup, Button } from '@blueprintjs/core'; // Using Blueprint for UI components
-import { Link } from 'react-router-dom';
+import { InputGroup, Button } from '@blueprintjs/core';
 import { registerWithEmail } from '../services/firebaseAuth';
-import "../styles/Register.scss"; // Ensure you create styling if needed
+import { Link } from 'react-router-dom';
+import "../styles/Register.scss";
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -20,10 +21,11 @@ const Register = () => {
 
         try {
             const user = await registerWithEmail(email, password);
-            setErrorMessage(''); // Clear error if successful
-            console.log("Registered user:", user);
+            setSuccessMessage("Registration successful! Please check your email to verify your account.");
+            setErrorMessage('');
         } catch (error) {
-            setErrorMessage(error.message); // Show any errors from Firebase
+            setErrorMessage(error.message);
+            setSuccessMessage('');
         }
     };
 
@@ -32,6 +34,7 @@ const Register = () => {
             <h2>Create Your Account</h2>
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {successMessage && <p className="success-message">{successMessage}</p>}
 
             <form onSubmit={handleRegister} className="register-form">
                 <div className="form-group">

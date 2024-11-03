@@ -17,6 +17,12 @@
         margin-bottom: 10px;
     }
 
+    .success-message {
+        color: green;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
     .login-form {
         .form-group {
             margin-bottom: 25px;
@@ -40,29 +46,19 @@
             text-decoration: none;
             margin-bottom: 17px; // Adds spacing between the two links
         }
-
-        a:hover {
-            text-decoration: underline;
-        }
     }
 
     .terms-divider {
-        margin: 20px 0;
+        margin: 20px 0; // Adds spacing for the divider
     }
 
     .terms {
         text-align: center;
         margin-top: 15px;
-        font-size: 14px;
 
         a {
             color: #007bff;
             text-decoration: none;
-            margin-left: 5px;
-        }
-
-        a:hover {
-            text-decoration: underline;
         }
     }
 }
