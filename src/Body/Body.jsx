@@ -5,6 +5,7 @@ import Calendar from './Calendar';
 import Profile from './Profile';
 import Notifications from './Notifications';
 import Settings from './Settings';
+import Register from './Register';
 
 
 const Body = () => {
@@ -17,6 +18,7 @@ const Body = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </div>

@@ -1,4 +1,4 @@
-.profile-page {
+.register-page {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
@@ -17,7 +17,7 @@
         margin-bottom: 10px;
     }
 
-    .login-form {
+    .register-form {
         .form-group {
             margin-bottom: 15px;
 
@@ -35,17 +35,19 @@
             }
         }
 
-        .btn-login {
+        .btn-register {
             width: 100%;
             padding: 10px;
             font-size: 16px;
-            background-color: #007bff;
+            background-color: #28a745;
+            /* Green color for register button */
             color: white;
             border: none;
             border-radius: 4px;
 
             &:hover {
-                background-color: #0056b3;
+                background-color: #218838;
+                /* Darker green on hover */
             }
         }
     }
@@ -53,13 +55,11 @@
     .extra-links {
         text-align: center;
         margin-top: 15px;
-        padding: 5px;
 
         a {
             display: block;
             color: #007bff;
             text-decoration: none;
-            margin-bottom: 15px;
         }
 
         a:hover {
@@ -67,24 +67,6 @@
         }
     }
 
-    .terms {
-        margin-top: 15px;
-        font-size: 12px;
-        text-align: center;
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    }
-
-    // .custom-checkbox .bp5-control-indicator {
-    //     background-color: #007bff;
-    // }
     .custom-input-group {
         display: flex;
         align-items: center;
@@ -93,18 +75,16 @@
 
         .bp5-input {
             padding-left: 40px;
-            /* Ensure enough space for the left icon */
+            /* Space for the left icon */
             padding-right: 40px;
-            /* Ensure enough space for the right button */
+            /* Space for any right element */
         }
     }
 
     .bp5-input::placeholder {
         color: #9e9e9e;
-        /* Placeholder color */
         font-size: 14px;
-        /* Placeholder font size */
         padding-left: 40px;
-        /* Padding for placeholder to match left icon */
+        /* Padding to align the placeholder with the icon */
     }
 }

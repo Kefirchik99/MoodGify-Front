@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { InputGroup, Button, Checkbox } from '@blueprintjs/core'; // Importing Blueprint components
+import { InputGroup, Button, Checkbox } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
+import { loginWithEmail } from '../services/firebaseAuth';
 import "../styles/Profile.scss";
 
 const Profile = () => {
@@ -9,19 +10,22 @@ const Profile = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-
-    // States to track focus
     const [emailFocused, setEmailFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
-        if (email === '' || password === '') {
-            setErrorMessage("Please fill in both fields.");
-        } else {
-            setErrorMessage('');
-            // Proceed with login logic
+        try {
+            if (email === '' || password === '') {
+                setErrorMessage("Please fill in both fields.");
+            } else {
+                const user = await loginWithEmail(email, password);
+                setErrorMessage('');
+                console.log("Logged in user:", user);
+            }
+        } catch (error) {
+            setErrorMessage(error);
         }
     };
 
@@ -29,18 +33,17 @@ const Profile = () => {
         <div className="profile-page">
             <h2>Login to Your Account</h2>
 
-            {/* Error message */}
             {errorMessage && <p className="error-message">{errorMessage}</p>}
 
             <form onSubmit={handleLogin} className="login-form">
                 <div className="form-group">
                     <InputGroup
-                        leftIcon={!emailFocused && !email ? "user" : null} // Hide icon when focused or filled
-                        placeholder={!emailFocused ? "Enter your email" : ""} // Hide placeholder when focused
+                        leftIcon={(!emailFocused && email === '') ? "user" : null} // Hide icon if focused or has content
+                        placeholder={(!emailFocused && email === '') ? "Enter your email" : ''} // Hide placeholder if focused or has content
                         value={email}
-                        onFocus={() => setEmailFocused(true)}
-                        onBlur={() => setEmailFocused(false)}
                         onChange={(e) => setEmail(e.target.value)}
+                        onFocus={() => setEmailFocused(true)} // Handle focus
+                        onBlur={() => setEmailFocused(email !== '')} // Handle blur (keep focused if input is not empty)
                         className="custom-input-group"
                     />
                 </div>
@@ -55,12 +58,12 @@ const Profile = () => {
                                 onClick={() => setShowPassword(!showPassword)}
                             />
                         }
-                        leftIcon={!passwordFocused && !password ? "lock" : null} // Hide icon when focused or filled
-                        placeholder={!passwordFocused ? "Enter your password" : ""} // Hide placeholder when focused
+                        leftIcon={(!passwordFocused && password === '') ? "lock" : null}
+                        placeholder={(!passwordFocused && password === '') ? "Enter your password" : ''}
                         value={password}
-                        onFocus={() => setPasswordFocused(true)}
-                        onBlur={() => setPasswordFocused(false)}
                         onChange={(e) => setPassword(e.target.value)}
+                        onFocus={() => setPasswordFocused(true)} // Handle focus
+                        onBlur={() => setPasswordFocused(password !== '')} // Handle blur
                         className="custom-input-group"
                     />
                 </div>
