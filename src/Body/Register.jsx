@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import { InputGroup, Button } from '@blueprintjs/core';
+import { InputGroup, Button } from '@blueprintjs/core'; // Using Blueprint for UI components
 import { Link } from 'react-router-dom';
 import { registerWithEmail } from '../services/firebaseAuth';
-import "../styles/Register.scss";
+import "../styles/Register.scss"; // Ensure you create styling if needed
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [emailFocused, setEmailFocused] = useState(false);
-    const [passwordFocused, setPasswordFocused] = useState(false);
-    const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -23,10 +20,10 @@ const Register = () => {
 
         try {
             const user = await registerWithEmail(email, password);
-            setErrorMessage('');
+            setErrorMessage(''); // Clear error if successful
             console.log("Registered user:", user);
         } catch (error) {
-            setErrorMessage(error);
+            setErrorMessage(error.message); // Show any errors from Firebase
         }
     };
 
@@ -39,12 +36,10 @@ const Register = () => {
             <form onSubmit={handleRegister} className="register-form">
                 <div className="form-group">
                     <InputGroup
-                        leftIcon={(!emailFocused && email === '') ? "user" : null}
-                        placeholder={(!emailFocused && email === '') ? "Enter your email" : ''}
+                        leftIcon="user"
+                        placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        onFocus={() => setEmailFocused(true)}
-                        onBlur={() => setEmailFocused(email !== '')}
                         className="custom-input-group"
                     />
                 </div>
@@ -52,12 +47,10 @@ const Register = () => {
                 <div className="form-group">
                     <InputGroup
                         type="password"
-                        leftIcon={(!passwordFocused && password === '') ? "lock" : null}
-                        placeholder={(!passwordFocused && password === '') ? "Enter your password" : ''}
+                        leftIcon="lock"
+                        placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        onFocus={() => setPasswordFocused(true)}
-                        onBlur={() => setPasswordFocused(password !== '')}
                         className="custom-input-group"
                     />
                 </div>
@@ -65,12 +58,10 @@ const Register = () => {
                 <div className="form-group">
                     <InputGroup
                         type="password"
-                        leftIcon={(!confirmPasswordFocused && confirmPassword === '') ? "lock" : null}
-                        placeholder={(!confirmPasswordFocused && confirmPassword === '') ? "Confirm your password" : ''}
+                        leftIcon="lock"
+                        placeholder="Confirm your password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        onFocus={() => setConfirmPasswordFocused(true)}
-                        onBlur={() => setConfirmPasswordFocused(confirmPassword !== '')}
                         className="custom-input-group"
                     />
                 </div>

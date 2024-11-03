@@ -1,31 +1,27 @@
 import React, { useState } from 'react';
-import { InputGroup, Button, Checkbox } from '@blueprintjs/core';
-import { Link } from 'react-router-dom';
-import { loginWithEmail } from '../services/firebaseAuth';
-import "../styles/Profile.scss";
+import { InputGroup, Button, Divider } from '@blueprintjs/core'; // Add Divider
+import { loginWithEmail } from '../services/firebaseAuth'; // Firebase function for login
+import { Link } from 'react-router-dom'; // Link for navigation
+import "../styles/Profile.scss"; // Ensure you create styling if needed
 
 const Profile = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [emailFocused, setEmailFocused] = useState(false);
-    const [passwordFocused, setPasswordFocused] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (email === '' || password === '') {
+            setErrorMessage('Please enter both email and password.');
+            return;
+        }
 
         try {
-            if (email === '' || password === '') {
-                setErrorMessage("Please fill in both fields.");
-            } else {
-                const user = await loginWithEmail(email, password);
-                setErrorMessage('');
-                console.log("Logged in user:", user);
-            }
+            const user = await loginWithEmail(email, password);
+            setErrorMessage(''); // Clear error if successful
+            console.log("Logged in user:", user);
         } catch (error) {
-            setErrorMessage(error);
+            setErrorMessage(error.message); // Show any errors from Firebase
         }
     };
 
@@ -38,42 +34,24 @@ const Profile = () => {
             <form onSubmit={handleLogin} className="login-form">
                 <div className="form-group">
                     <InputGroup
-                        leftIcon={(!emailFocused && email === '') ? "user" : null} // Hide icon if focused or has content
-                        placeholder={(!emailFocused && email === '') ? "Enter your email" : ''} // Hide placeholder if focused or has content
+                        leftIcon="user"
+                        placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        onFocus={() => setEmailFocused(true)} // Handle focus
-                        onBlur={() => setEmailFocused(email !== '')} // Handle blur (keep focused if input is not empty)
                         className="custom-input-group"
+                        autoComplete="email"
                     />
                 </div>
 
                 <div className="form-group">
                     <InputGroup
-                        type={showPassword ? 'text' : 'password'}
-                        rightElement={
-                            <Button
-                                icon={showPassword ? "eye-off" : "eye-open"}
-                                minimal={true}
-                                onClick={() => setShowPassword(!showPassword)}
-                            />
-                        }
-                        leftIcon={(!passwordFocused && password === '') ? "lock" : null}
-                        placeholder={(!passwordFocused && password === '') ? "Enter your password" : ''}
+                        type="password"
+                        leftIcon="lock"
+                        placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        onFocus={() => setPasswordFocused(true)} // Handle focus
-                        onBlur={() => setPasswordFocused(password !== '')} // Handle blur
                         className="custom-input-group"
-                    />
-                </div>
-
-                <div className="form-group">
-                    <Checkbox
-                        label="Remember Me"
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                        className="custom-checkbox"
+                        autoComplete="current-password"
                     />
                 </div>
 
@@ -85,9 +63,13 @@ const Profile = () => {
                 <Link to="/register" className="register-link">New here? Register</Link>
             </div>
 
+            {/* Add Divider here */}
+            <Divider className="terms-divider" />
+
             <div className="terms">
                 <p>
-                    By signing in, you agree to our <Link to="/terms">Terms and Conditions</Link> and
+                    By signing in, you agree to our
+                    <Link to="/terms"> Terms and Conditions</Link> and
                     <Link to="/privacy-policy"> Privacy Policy</Link>.
                 </p>
             </div>
