@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Alert, Button, Intent } from '@blueprintjs/core';
 import Cookies from 'js-cookie'; // Library to manage cookies
 import { useNavigate } from 'react-router-dom';
-import '../styles/CookieConsent.scss'; // Make sure to style it accordingly
+// import '../styles/CookieConsent.scss';
 
 const CookieConsentAlert = () => {
     const [isAlertOpen, setIsAlertOpen] = useState(false);
