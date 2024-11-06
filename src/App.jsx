@@ -6,6 +6,7 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 // import Header from './Header';
 import Body from './Body/Body';
 // import Footer from './Footer';
+import CookieConsentAlert from './Body/Cookies/CookieConsentAlert'
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
   return (
     <div className='app-container'>
       <Header />
+      <CookieConsentAlert />
       <Body />
       {/* <Footer /> */}
     </div>

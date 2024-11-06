@@ -9,6 +9,9 @@ import Register from './Register';
 import ForgotPwd from './ForgotPwd';
 import Terms from './Terms';
 import PrivacyPolicy from './PrivacyPolicy';
+import CookiePolicy from './cookies/CookiePolicy';
+import CookieDeclined from './cookies/CookieDeclined';
+
 
 
 const Body = () => {
@@ -25,6 +28,8 @@ const Body = () => {
                 <Route path="/recover-password" element={<ForgotPwd />} />
                 <Route path="/terms" element={<Terms />} /> {/* Add Terms route */}
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} /> {/* Add Privacy Policy route */}
+                <Route path="/cookie-policy" element={<CookiePolicy />} />
+                <Route path="/cookie-declined" element={<CookieDeclined />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </div>
