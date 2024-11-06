@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Tooltip } from '@blueprintjs/core';
 import "@blueprintjs/core/lib/css/blueprint.css";
 import '../styles/Navigation.scss';
+import NotifPopover from '../Body/NotifPopover';
 
 const Navbar = () => {
     return (
@@ -20,9 +21,12 @@ const Navbar = () => {
                 <Tooltip content="Profile">
                     <Link to='/profile' className="bp5-button bp5-minimal bp5-icon-user"></Link>
                 </Tooltip>
+
+
                 <Tooltip content="Notifications">
-                    <Link to='/notifications' className="bp5-button bp5-minimal bp5-icon-notifications"></Link>
+                    <NotifPopover />
                 </Tooltip>
+
                 <Tooltip content="Settings">
                     <Link to='/settings' className="bp5-button bp5-minimal bp5-icon-cog"></Link>
                 </Tooltip>

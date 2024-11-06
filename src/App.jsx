@@ -7,16 +7,19 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import Body from './Body/Body';
 // import Footer from './Footer';
 import CookieConsentAlert from './Body/Cookies/CookieConsentAlert'
+import { NotificationsProvider } from './providers/NotifContext'
 
 
 function App() {
 
   return (
     <div className='app-container'>
-      <Header />
-      <CookieConsentAlert />
-      <Body />
-      {/* <Footer /> */}
+      <NotificationsProvider>
+        <Header />
+        <CookieConsentAlert />
+        <Body />
+        {/* <Footer /> */}
+      </NotificationsProvider>
     </div>
   );
 }

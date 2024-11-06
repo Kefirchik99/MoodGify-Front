@@ -1,8 +1,9 @@
 // Import necessary Firebase functions
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Import Firestore
 
-// Firebase configuration using import.meta.env for Vite
+// Firebase configuration using environment variables for Vite
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -16,5 +17,6 @@ const firebaseConfig = {
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
-// Export the authentication service
+// Initialize services
 export const auth = getAuth(app);
+export const db = getFirestore(app); // Initialize Firestore and export it
