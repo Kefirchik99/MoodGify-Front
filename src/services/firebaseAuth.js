@@ -1,23 +1,58 @@
-// Import Firebase authentication functions
 import { auth } from '../firebase';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
     sendEmailVerification,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut
 } from "firebase/auth";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext, createContext } from 'react';
 
-// Register a new user and send an email verification
+// Create Auth context
+const AuthContext = createContext();
+
+// Custom hook to access Auth context
+export const useAuth = () => useContext(AuthContext);
+
+// AuthProvider component to manage global user state and provide auth functions
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Subscribe to auth state changes and set loading state
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser || null);
+            setLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    // Logout function
+    const logout = async () => {
+        try {
+            await signOut(auth);
+            setUser(null);
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, loading, logout }}>
+            {!loading && children} {/* Only render children when not loading */}
+        </AuthContext.Provider>
+    );
+};
+
+// Registration function with email verification
 export const registerWithEmail = async (email, password) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
         await sendEmailVerification(user);
         console.log("Verification email sent!");
-
         return user;
     } catch (error) {
         console.error("Error during registration:", error);
@@ -25,16 +60,14 @@ export const registerWithEmail = async (email, password) => {
     }
 };
 
-// Log in an existing user, checking email verification status
+// Login function with email verification check
 export const loginWithEmail = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
         if (!user.emailVerified) {
             throw new Error("Please verify your email before logging in.");
         }
-
         return user;
     } catch (error) {
         console.error("Login error:", error);
@@ -42,7 +75,7 @@ export const loginWithEmail = async (email, password) => {
     }
 };
 
-// Send a password reset email
+// Password reset function
 export const sendPasswordReset = async (email) => {
     try {
         await sendPasswordResetEmail(auth, email);
@@ -52,20 +85,4 @@ export const sendPasswordReset = async (email) => {
         console.error("Password reset error:", error);
         throw new Error(error.message);
     }
-};
-
-// Custom hook to provide the current authenticated user
-// Custom hook to provide the current authenticated user
-export const useAuth = () => {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser || null);
-        });
-
-        return () => unsubscribe(); // Cleanup on unmount
-    }, []);
-
-    return { user };
 };
