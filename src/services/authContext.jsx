@@ -8,15 +8,14 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [autoLogoutMessage, setAutoLogoutMessage] = useState("");
+    const [hasSeenWelcome, setHasSeenWelcome] = useState(false); // Track if the welcome page has been visited
 
     const inactivityTimeout = 15 * 60 * 1000;
     let logoutTimer;
 
     const resetTimer = () => {
         clearTimeout(logoutTimer);
-        logoutTimer = setTimeout(() => {
-            handleAutoLogout();
-        }, inactivityTimeout);
+        logoutTimer = setTimeout(handleAutoLogout, inactivityTimeout);
     };
 
     const handleAutoLogout = () => {
@@ -30,11 +29,13 @@ export const AuthProvider = ({ children }) => {
         await signOut(auth);
         setUser(null);
         setAutoLogoutMessage("");
+        setHasSeenWelcome(false); // Reset on logout
     };
 
     const loginWithEmail = async (email, password) => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        setUser(userCredential.user); // Update user state on successful login
+        setUser(userCredential.user);
+        setHasSeenWelcome(false); // Reset to ensure WelcomePage shows after each login
     };
 
     useEffect(() => {
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loginWithEmail, logout, autoLogoutMessage }}>
+        <AuthContext.Provider value={{ user, loginWithEmail, logout, autoLogoutMessage, hasSeenWelcome, setHasSeenWelcome }}>
             {children}
         </AuthContext.Provider>
     );

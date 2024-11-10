@@ -1,12 +1,12 @@
 // Login.jsx
 import React, { useState } from 'react';
 import { Button, Card, Elevation, InputGroup, FormGroup, Intent } from '@blueprintjs/core';
-import { useAuth } from '../services/authContext'; // Use the updated authContext
+import { useAuth } from '../services/authContext';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Login.scss';
 
 const Login = () => {
-    const { loginWithEmail } = useAuth(); // Get loginWithEmail from context
+    const { loginWithEmail } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -16,8 +16,8 @@ const Login = () => {
         e.preventDefault();
         setError('');
         try {
-            await loginWithEmail(email, password); // Calls the login function from context
-            navigate('/profile'); // Redirect to profile after successful login
+            await loginWithEmail(email, password);
+            navigate('/welcome'); // Redirect to WelcomePage after successful login
         } catch (error) {
             setError(error.message);
         }
