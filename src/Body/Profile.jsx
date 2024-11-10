@@ -1,37 +1,33 @@
+// Profile.jsx
 import React, { useState } from 'react';
 import { Button, Divider } from '@blueprintjs/core';
 import { useAuth } from '../services/authContext';
 import { sendEmailVerification } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import "../styles/Profile.scss";
 
 const Profile = () => {
-    const { user } = useAuth(); // Get the authenticated user from context
+    const { user, logout, autoLogoutMessage } = useAuth(); // Get user, logout function, and auto-logout message from context
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    // Resend email verification
+    // Function to resend email verification
     const handleResendVerification = async () => {
-        try {
-            if (user && !user.emailVerified) {
+        if (user && !user.emailVerified) {
+            try {
                 await sendEmailVerification(user);
                 setSuccessMessage('Verification email has been resent. Please check your inbox.');
                 setErrorMessage('');
+            } catch {
+                setErrorMessage('Error sending verification email.');
+                setSuccessMessage('');
             }
-        } catch (error) {
-            setErrorMessage('Error sending verification email.');
-            setSuccessMessage('');
         }
     };
 
-    // Display a message if the user is not logged in
+    // Redirect to login if user is not authenticated
     if (!user) {
-        return (
-            <div className="profile-page">
-                <p>Please log in to view your profile.</p>
-                <Link to="/login">Go to Login</Link>
-            </div>
-        );
+        return <Navigate to="/login" replace />;
     }
 
     return (
@@ -45,17 +41,22 @@ const Profile = () => {
                 <p><strong>Email Verified:</strong> {user.emailVerified ? 'Yes' : 'No'}</p>
             </div>
 
-            {/* Error and Success Messages */}
+            {/* Message Display */}
             {errorMessage && <p className="error-message">{errorMessage}</p>}
             {successMessage && <p className="success-message">{successMessage}</p>}
+            {autoLogoutMessage && <p className="auto-logout-message">{autoLogoutMessage}</p>}
 
-            {/* Resend Verification Email */}
+            {/* Resend Verification Button */}
             {!user.emailVerified && (
                 <Button intent="warning" onClick={handleResendVerification} text="Resend Verification Email" />
             )}
 
+            {/* Logout Button */}
+            <Button intent="danger" onClick={logout} text="Logout" className="logout-button" />
+
             <Divider className="terms-divider" />
 
+            {/* Terms and Privacy Links */}
             <div className="terms">
                 <p>
                     By using this application, you agree to our

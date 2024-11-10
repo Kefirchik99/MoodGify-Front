@@ -1,11 +1,12 @@
+// Login.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { loginWithEmail } from '../services/firebaseAuth';
-import { getErrorMessage } from '../services/errorMessages';
-import { InputGroup, Button } from '@blueprintjs/core';
-import "../styles/Login.scss"; // Create this for styling as needed
+import { Button, Card, Elevation, InputGroup, FormGroup, Intent } from '@blueprintjs/core';
+import { useAuth } from '../services/authContext'; // Use the updated authContext
+import { Link, useNavigate } from 'react-router-dom';
+import '../styles/Login.scss';
 
 const Login = () => {
+    const { loginWithEmail } = useAuth(); // Get loginWithEmail from context
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -14,40 +15,47 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
-
         try {
-            await loginWithEmail(email, password);
-            navigate('/welcome'); // Redirect to welcome page after successful login
+            await loginWithEmail(email, password); // Calls the login function from context
+            navigate('/profile'); // Redirect to profile after successful login
         } catch (error) {
-            setError(getErrorMessage(error.code));
+            setError(error.message);
         }
     };
 
     return (
-        <div className="login-page">
-            <h2>Sign In</h2>
-            {error && <p className="error-message">{error}</p>}
-            <form onSubmit={handleLogin} className="login-form">
-                <InputGroup
-                    leftIcon="envelope"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <InputGroup
-                    type="password"
-                    leftIcon="lock"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button type="submit" intent="primary" text="Login" />
-            </form>
-            <div className="extra-links">
-                <Button minimal intent="primary" onClick={() => navigate('/recover-password')}>
-                    Forgot Password?
-                </Button>
-            </div>
+        <div className="login-container">
+            <Card elevation={Elevation.TWO} className="login-card">
+                <h2>Sign In</h2>
+                {error && <p className="error-message">{error}</p>}
+
+                <FormGroup label="Email" labelFor="email-input" labelInfo="(required)">
+                    <InputGroup
+                        id="email-input"
+                        placeholder="Enter your email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </FormGroup>
+
+                <FormGroup label="Password" labelFor="password-input" labelInfo="(required)">
+                    <InputGroup
+                        id="password-input"
+                        placeholder="Enter your password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </FormGroup>
+
+                <Button intent={Intent.PRIMARY} text="Login" onClick={handleLogin} fill />
+
+                <div className="login-links">
+                    <Link to="/recover-password">Forgot Password?</Link>
+                    <Link to="/register">New here? Register</Link>
+                </div>
+            </Card>
         </div>
     );
 };
