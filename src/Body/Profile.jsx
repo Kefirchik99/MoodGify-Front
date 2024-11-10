@@ -1,111 +1,64 @@
 import React, { useState } from 'react';
-import { InputGroup, Button, Divider } from '@blueprintjs/core';
-import { loginWithEmail } from '../services/firebaseAuth';
+import { Button, Divider } from '@blueprintjs/core';
+import { useAuth } from '../services/authContext';
 import { sendEmailVerification } from 'firebase/auth';
 import { Link } from 'react-router-dom';
-import { getErrorMessage } from '../services/errorMessages'; // Import error messages
 import "../styles/Profile.scss";
 
 const Profile = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const { user } = useAuth(); // Get the authenticated user from context
     const [successMessage, setSuccessMessage] = useState('');
-    const [user, setUser] = useState(null); // Track the user state
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setErrorMessage('');
-        setSuccessMessage('');
-
-        if (email === '' || password === '') {
-            setErrorMessage('Please enter both email and password.');
-            return;
-        }
-
-        try {
-            const loggedInUser = await loginWithEmail(email, password);
-
-            // Check if the email is verified
-            if (!loggedInUser.emailVerified) {
-                setErrorMessage('Your email is not verified. Please verify your email.');
-                setUser(loggedInUser); // Store the user so we can resend the verification email
-                return;
-            }
-
-            setErrorMessage('');
-            setSuccessMessage('Login successful!');
-            console.log("Logged in user:", loggedInUser);
-        } catch (error) {
-            setErrorMessage(getErrorMessage(error.code)); // Use the centralized error handler
-        }
-    };
+    const [errorMessage, setErrorMessage] = useState('');
 
     // Resend email verification
     const handleResendVerification = async () => {
         try {
-            if (user) {
-                await sendEmailVerification(user); // Send the verification email
+            if (user && !user.emailVerified) {
+                await sendEmailVerification(user);
                 setSuccessMessage('Verification email has been resent. Please check your inbox.');
                 setErrorMessage('');
             }
         } catch (error) {
-            setErrorMessage(getErrorMessage(error.code)); // Handle errors during verification
+            setErrorMessage('Error sending verification email.');
+            setSuccessMessage('');
         }
     };
 
+    // Display a message if the user is not logged in
+    if (!user) {
+        return (
+            <div className="profile-page">
+                <p>Please log in to view your profile.</p>
+                <Link to="/login">Go to Login</Link>
+            </div>
+        );
+    }
+
     return (
         <div className="profile-page">
-            <h2>Login to Your Account</h2>
+            <h2>Your Profile</h2>
 
-            {/* Error message */}
+            {/* User Information */}
+            <div className="profile-info">
+                <p><strong>Name:</strong> {user.displayName || 'Anonymous'}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Email Verified:</strong> {user.emailVerified ? 'Yes' : 'No'}</p>
+            </div>
+
+            {/* Error and Success Messages */}
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-            {/* Success message */}
             {successMessage && <p className="success-message">{successMessage}</p>}
 
-            <form onSubmit={handleLogin} className="login-form">
-                <div className="form-group">
-                    <InputGroup
-                        leftIcon="user"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="custom-input-group"
-                        autoComplete="email"
-                    />
-                </div>
-
-                <div className="form-group">
-                    <InputGroup
-                        type="password"
-                        leftIcon="lock"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="custom-input-group"
-                        autoComplete="current-password"
-                    />
-                </div>
-
-                <Button type="submit" className="btn-login" intent="primary" text="Sign In" fill />
-            </form>
-
-            {/* Show button to resend verification email if needed */}
-            {errorMessage === 'Your email is not verified. Please verify your email.' && (
+            {/* Resend Verification Email */}
+            {!user.emailVerified && (
                 <Button intent="warning" onClick={handleResendVerification} text="Resend Verification Email" />
             )}
-
-            <div className="extra-links">
-                <Link to="/recover-password" className="recover-password-link">Forgot Password?</Link>
-                <Link to="/register" className="register-link">New here? Register</Link>
-            </div>
 
             <Divider className="terms-divider" />
 
             <div className="terms">
                 <p>
-                    By signing in, you agree to our
+                    By using this application, you agree to our
                     <Link to="/terms"> Terms and Conditions</Link> and
                     <Link to="/privacy-policy"> Privacy Policy</Link>.
                 </p>

@@ -1,47 +1,44 @@
-// Import the initialized auth instance from firebase.js
+// firebaseAuth.js
 import { auth } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    sendEmailVerification
+} from "firebase/auth";
 
-// Function to register a new user
+// Register a new user and send a verification email
 export const registerWithEmail = async (email, password) => {
     try {
-        // Register the user
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // Send email verification
-        await sendEmailVerification(user);
-        console.log("Verification email sent!");
-
+        await sendEmailVerification(user); // Send email verification
         return user;
     } catch (error) {
-        throw new Error(error.message);
+        throw new Error(error.message || "Error registering user.");
     }
 };
 
-// Function to log in an existing user
+// Log in an existing user and check email verification
 export const loginWithEmail = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // Check if the email is verified
         if (!user.emailVerified) {
             throw new Error("Please verify your email before logging in.");
         }
-
         return user;
     } catch (error) {
-        throw new Error(error.message);
+        throw new Error(error.message || "Error logging in user.");
     }
 };
 
-// Function to send a password reset email
+// Send a password reset email
 export const sendPasswordReset = async (email) => {
     try {
         await sendPasswordResetEmail(auth, email);
         return "Password reset email sent!";
     } catch (error) {
-        throw new Error(error.message);
+        throw new Error(error.message || "Error sending password reset email.");
     }
 };
