@@ -1,0 +1,26 @@
+/* Login.scss */
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f8fa;
+}
+
+.login-card {
+    width: 400px;
+    padding: 20px;
+    text-align: center;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+}
+
+.login-links {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}

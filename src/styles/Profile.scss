@@ -1,6 +1,7 @@
 .profile-page {
     max-width: 400px;
-    margin: 0 auto;
+    min-width: 400px;
+    margin: 25px auto;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -61,4 +62,43 @@
             text-decoration: none;
         }
     }
+}
+
+/* Profile.scss */
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+
+    p {
+        display: flex;
+        justify-content: flex-start;
+        /* Aligns content to the left */
+        align-items: center;
+        margin: 0;
+    }
+
+    strong {
+        font-weight: 600;
+        padding-right: 5px;
+        /* Adds padding between label and data */
+        text-align: left;
+        width: 100px;
+        /* Fixed width to position 'strong' to the right */
+    }
+
+    span {
+        flex-grow: 1;
+        /* Allows the span to expand and position itself next to 'strong' */
+        display: inline-block;
+        text-align: left;
+        padding-left: 15px;
+        /* Adds left padding to center the span within available space */
+    }
+}
+
+.logout-button {
+    margin-top: 20px;
 }
