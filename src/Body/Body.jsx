@@ -36,6 +36,18 @@ const Body = () => {
                 <Route path="/cookie-declined" element={<CookieDeclined />} />
 
                 {/* Conditional Redirect to WelcomePage or Profile */}
+
+                <Route
+                    path="/notifications"
+                    element={
+                        user ? (
+                            <ProtectedRoute><Notifications /></ProtectedRoute>
+                        ) : (
+                            <Navigate to="/login" replace />
+                        )
+                    }
+                />
+
                 <Route
                     path="/profile"
                     element={

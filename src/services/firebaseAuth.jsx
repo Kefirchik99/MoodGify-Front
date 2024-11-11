@@ -1,18 +1,46 @@
 // firebaseAuth.js
-import { auth } from '../firebase';
+import { auth, db } from '../firebase'; // Use the imported db from firebase.js
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
     sendEmailVerification
 } from "firebase/auth";
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { Filter } from 'bad-words';// Import Filter correctly
 
-// Register a new user and send a verification email
-export const registerWithEmail = async (email, password) => {
+const filter = new Filter(); // Instantiate the profanity filter
+
+// Check if the username is already taken
+export const checkUsernameAvailability = async (username) => {
+    const docRef = doc(db, "usernames", username);
+    const docSnap = await getDoc(docRef);
+    return !docSnap.exists(); // Returns true if the username is available
+};
+
+// Save the username to Firestore
+export const saveUsername = async (uid, username) => {
+    // Store the username in a collection for easy look-up and in the user's profile
+    await setDoc(doc(db, "usernames", username), { uid });
+    await setDoc(doc(db, "users", uid), { username }, { merge: true });
+};
+
+// Register a new user and save the username
+export const registerWithEmail = async (email, password, username) => {
+    if (filter.isProfane(username)) {
+        throw new Error("Please choose a more appropriate username.");
+    }
+
+    const isAvailable = await checkUsernameAvailability(username);
+    if (!isAvailable) {
+        throw new Error("Username is already taken. Please choose another.");
+    }
+
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        await sendEmailVerification(user); // Send email verification
+        await sendEmailVerification(user);
+        await saveUsername(user.uid, username); // Save the username
         return user;
     } catch (error) {
         throw new Error(error.message || "Error registering user.");

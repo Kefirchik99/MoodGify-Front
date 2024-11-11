@@ -1,6 +1,7 @@
 // Import necessary Firebase functions
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Import Firestore
 
 // Firebase configuration using import.meta.env for Vite
 const firebaseConfig = {
@@ -16,5 +17,6 @@ const firebaseConfig = {
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
-// Export the authentication service
+// Initialize Firebase services
 export const auth = getAuth(app);
+export const db = getFirestore(app); // Export Firestore instance

@@ -1,69 +1,71 @@
 // Profile.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Divider } from '@blueprintjs/core';
 import { useAuth } from '../services/authContext';
-import { sendEmailVerification } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { Link, Navigate } from 'react-router-dom';
+import Avatar from './Avatar';
+import { db } from '../firebase'; // Ensure db is imported correctly
 import "../styles/Profile.scss";
 
 const Profile = () => {
-    const { user, logout, autoLogoutMessage } = useAuth(); // Get user, logout function, and auto-logout message from context
+    const { user, logout, autoLogoutMessage } = useAuth();
+    const [username, setUsername] = useState('');
+    const [registrationDate, setRegistrationDate] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(true); // Loading state to control when content displays
 
-    // Function to resend email verification
-    const handleResendVerification = async () => {
-        if (user && !user.emailVerified) {
-            try {
-                await sendEmailVerification(user);
-                setSuccessMessage('Verification email has been resent. Please check your inbox.');
-                setErrorMessage('');
-            } catch {
-                setErrorMessage('Error sending verification email.');
-                setSuccessMessage('');
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            if (user) {
+                const userDoc = doc(db, 'users', user.uid);
+                const docSnap = await getDoc(userDoc);
+
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    setUsername(userData.username || 'User');
+
+                    // Format registration date to "day-month-year"
+                    const registrationDate = new Date(user.metadata.creationTime);
+                    const formattedDate = registrationDate.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    });
+                    setRegistrationDate(formattedDate);
+                }
             }
-        }
-    };
+            setLoading(false);
+        };
+        fetchUserProfile();
+    }, [user]);
 
-    // Redirect to login if user is not authenticated
     if (!user) {
         return <Navigate to="/login" replace />;
+    }
+
+    if (loading) {
+        return <p>Loading profile...</p>;
     }
 
     return (
         <div className="profile-page">
             <h2>Your Profile</h2>
+            <Avatar className="profile-avatar" value={user.uid} size={100} /> {/* Display avatar with unique user identifier */}
 
-            {/* User Information */}
             <div className="profile-info">
-                <p><strong>Name:</strong> {user.displayName || 'Anonymous'}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Email Verified:</strong> {user.emailVerified ? 'Yes' : 'No'}</p>
+                <p><strong>Username:</strong> <span>{username}</span></p>
+                <p><strong>Email:</strong> <span>{user.email}</span></p>
+                <p><strong>Registered:</strong> <span>{registrationDate}</span></p>
             </div>
 
-            {/* Message Display */}
             {errorMessage && <p className="error-message">{errorMessage}</p>}
             {successMessage && <p className="success-message">{successMessage}</p>}
             {autoLogoutMessage && <p className="auto-logout-message">{autoLogoutMessage}</p>}
 
-            {/* Resend Verification Button */}
-            {!user.emailVerified && (
-                <Button intent="warning" onClick={handleResendVerification} text="Resend Verification Email" />
-            )}
-
-            {/* Logout Button */}
             <Button intent="danger" onClick={logout} text="Logout" className="logout-button" />
-
             <Divider className="terms-divider" />
-
-            {/* Terms and Privacy Links */}
-            <div className="terms">
-                <p>
-                    By using this application, you agree to our
-                    <Link to="/terms"> Terms and Conditions</Link> and
-                    <Link to="/privacy-policy"> Privacy Policy</Link>.
-                </p>
-            </div>
         </div>
     );
 };
