@@ -1,11 +1,25 @@
-@import './variables';
+// Navigation.scss
+
+.notification-button {
+    position: relative;
+}
+
+.notification-indicator {
+    position: absolute;
+    top: 5px; // Adjust these values as needed to position the dot within the bell icon
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+}
 
 .bp5-navbar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%; // Change from 100vw to 100%
-    background-color: $background-color;
+    width: 100%;
+
     padding: 10px 20px;
     display: flex;
     align-items: center;
@@ -16,19 +30,9 @@
 
 .bp5-navbar-heading {
     text-decoration: none !important;
-    /* Removes underline */
     color: #3D5AFE;
-    /* Set to your desired color */
     font-weight: bold;
-    /* Optional: make it bold */
     font-size: 1.5rem;
-    /* Optional: adjust font size */
-}
-
-.bp5-navbar-heading a {
-    color: inherit;
-    /* Inherit color from .bp5-navbar-heading */
-    text-decoration: none;
 }
 
 .bp5-button {
@@ -38,4 +42,14 @@
 .bp5-navbar-divider {
     margin: 0 15px;
     height: 20px;
+}
+
+.bp5-popover {
+    &.bp5-popover-placement-bottom {
+
+        .bp5-popover-arrow,
+        .bp5-popover-arrow-border {
+            margin-left: -5px; // Adjust this value to move the caret horizontally
+        }
+    }
 }

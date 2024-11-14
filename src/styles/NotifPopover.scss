@@ -1,0 +1,60 @@
+.notifications-popover {
+    padding: 10px;
+    width: 300px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+
+    h5 {
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .notifications-list {
+        max-height: 250px;
+        overflow-y: auto;
+
+        .notification-item {
+            position: relative;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            border: 1px solid #e1e1e1;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+
+            .notification-content {
+                padding-right: 20px;
+            }
+
+            .delete-notification-btn {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+            }
+        }
+
+        .no-notifications {
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+    }
+
+    .clear-all-btn {
+        display: block;
+        width: 100%;
+        margin-top: 15px;
+        padding: 8px;
+        background-color: #D9534F;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #C9302C;
+        }
+    }
+}

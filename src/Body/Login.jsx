@@ -1,7 +1,7 @@
 // Login.jsx
 import React, { useState } from 'react';
 import { Button, Card, Elevation, InputGroup, FormGroup, Intent } from '@blueprintjs/core';
-import { useAuth } from '../services/authContext';
+import { useAuth } from '../providers/authContext';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Login.scss';
 

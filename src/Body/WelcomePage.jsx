@@ -1,6 +1,6 @@
 // WelcomePage.jsx
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../services/authContext';
+import { useAuth } from '../providers/authContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Ensure db is imported correctly
 import { Link } from 'react-router-dom';
