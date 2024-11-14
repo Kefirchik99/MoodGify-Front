@@ -76,3 +76,27 @@
     border-radius: 5px;
   }
   
+
+  .bp3-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+  }
+  
+  .bp3-progress-bar {
+    height: 20px;
+    border-radius: 5px;
+  }
+  
+
+  .bp5-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+  }
+  
+  .bp5-progress-bar {
+    height: 20px;
+    border-radius: 5px;
+  }
+  

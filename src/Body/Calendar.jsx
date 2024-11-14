@@ -23,7 +23,7 @@ const Calendar = () => {
         { label: 'Mood 2', value: 45, maxValue: 100 },
         { label: 'Mood 3', value: 90, maxValue: 100 },
       ];
-      
+
     return (
         <>
         <div>
@@ -35,6 +35,17 @@ const Calendar = () => {
         <MoodList />
 
         <PostFrequencyChart data={postData} />
+
+        <div className="" style={{ padding: '20px' }}>
+      {progressData.map((data, index) => (
+        <ProgressBarWithLabel
+          key={index}
+          label={data.label}
+          value={data.value}
+          maxValue={data.maxValue}
+        />
+      ))}
+    </div>
 
         </>
     );

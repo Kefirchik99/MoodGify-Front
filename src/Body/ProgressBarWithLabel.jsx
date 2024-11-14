@@ -1,6 +1,7 @@
 import React from 'react';
 import { ProgressBar, Label } from '@blueprintjs/core';
-// import './App.css'
+
+import "../styles/PostCalendar.css";
 
 const ProgressBarWithLabel = ({ label, value, maxValue }) => {
   const progress = (value / maxValue) * 100;
