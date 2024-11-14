@@ -8,7 +8,7 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import '../styles/Navigation.scss';
 
 const Navbar = () => {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const [hasNewNotifications, setHasNewNotifications] = useState(true);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -31,9 +31,9 @@ const Navbar = () => {
                     <Link to='/profile' className="bp5-button bp5-minimal bp5-icon-user"></Link>
                 </Tooltip>
 
-                {/* Conditionally render Tooltip for Notifications based on popover state */}
-                {user && (
-                    isPopoverOpen ? (
+                {/* Notifications Icon with dot */}
+                {(loading || user) && (
+                    <Tooltip content="Notifications" disabled={isPopoverOpen}>
                         <Popover
                             content={<NotificationsPopover />}
                             isOpen={isPopoverOpen}
@@ -41,31 +41,16 @@ const Navbar = () => {
                             position={Position.BOTTOM_RIGHT}
                         >
                             <Button
-                                className="bp5-button bp5-minimal"
+                                className="bp5-button bp5-minimal notification-bell"
                                 onClick={handleNotificationsClick}
                                 icon={<Icon icon="notifications" />}
                             >
-                                {hasNewNotifications && <span className="notification-indicator" />}
+                                <span
+                                    className={`notification-indicator ${hasNewNotifications ? 'visible' : ''}`}
+                                />
                             </Button>
                         </Popover>
-                    ) : (
-                        <Tooltip content="Notifications">
-                            <Popover
-                                content={<NotificationsPopover />}
-                                isOpen={isPopoverOpen}
-                                onInteraction={(state) => setIsPopoverOpen(state)}
-                                position={Position.BOTTOM_RIGHT}
-                            >
-                                <Button
-                                    className="bp5-button bp5-minimal"
-                                    onClick={handleNotificationsClick}
-                                    icon={<Icon icon="notifications" />}
-                                >
-                                    {hasNewNotifications && <span className="notification-indicator" />}
-                                </Button>
-                            </Popover>
-                        </Tooltip>
-                    )
+                    </Tooltip>
                 )}
 
                 <Tooltip content="Settings">

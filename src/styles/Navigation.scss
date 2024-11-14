@@ -1,25 +1,11 @@
-// Navigation.scss
-
-.notification-button {
-    position: relative;
-}
-
-.notification-indicator {
-    position: absolute;
-    top: 5px; // Adjust these values as needed to position the dot within the bell icon
-    right: 5px;
-    width: 8px;
-    height: 8px;
-    background-color: red;
-    border-radius: 50%;
-}
+@import './variables';
 
 .bp5-navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-
+    background-color: $background-color;
     padding: 10px 20px;
     display: flex;
     align-items: center;
@@ -33,6 +19,28 @@
     color: #3D5AFE;
     font-weight: bold;
     font-size: 1.5rem;
+}
+
+.notification-bell {
+    position: relative;
+}
+
+.notification-indicator {
+    position: absolute;
+    top: 5px;
+    /* Adjust as needed */
+    right: 5px;
+    /* Adjust as needed */
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    visibility: hidden;
+    /* Hidden by default */
+
+    &.visible {
+        visibility: visible;
+    }
 }
 
 .bp5-button {
@@ -49,7 +57,7 @@
 
         .bp5-popover-arrow,
         .bp5-popover-arrow-border {
-            margin-left: -5px; // Adjust this value to move the caret horizontally
+            margin-left: -9px;
         }
     }
 }
