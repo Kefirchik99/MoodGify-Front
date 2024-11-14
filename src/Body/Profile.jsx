@@ -1,7 +1,7 @@
 // Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { Button, Divider } from '@blueprintjs/core';
-import { useAuth } from '../services/authContext';
+import { useAuth } from '../providers/authContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { Link, Navigate } from 'react-router-dom';
 import Avatar from './Avatar';

@@ -1,0 +1,23 @@
+// Notifications.scss
+.notifications-container {
+    padding: 10px;
+    max-width: 300px;
+}
+
+.notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.notification-message {
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.notification-status {
+    cursor: pointer;
+    margin-left: 8px;
+}

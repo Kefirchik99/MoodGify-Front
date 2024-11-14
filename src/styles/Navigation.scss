@@ -39,3 +39,14 @@
     margin: 0 15px;
     height: 20px;
 }
+
+// Navigation.scss
+.notification-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background-color: blue;
+    border-radius: 50%;
+}

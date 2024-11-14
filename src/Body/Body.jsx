@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import MainPage from './MainPage';
 import Calendar from './Calendar';
 import Profile from './Profile';
-import Notifications from './Notifications';
 import Settings from './Settings';
 import Register from './Register';
 import ForgotPwd from './ForgotPwd';
@@ -15,7 +14,7 @@ import CookieDeclined from './cookies/CookieDeclined';
 import Login from './Login';
 import WelcomePage from './WelcomePage';
 import ProtectedRoute from './ProtectedRoute';
-import { useAuth } from '../services/authContext';
+import { useAuth } from '../providers/authContext';
 
 const Body = () => {
     const { user, hasSeenWelcome, setHasSeenWelcome } = useAuth();
@@ -36,18 +35,6 @@ const Body = () => {
                 <Route path="/cookie-declined" element={<CookieDeclined />} />
 
                 {/* Conditional Redirect to WelcomePage or Profile */}
-
-                <Route
-                    path="/notifications"
-                    element={
-                        user ? (
-                            <ProtectedRoute><Notifications /></ProtectedRoute>
-                        ) : (
-                            <Navigate to="/login" replace />
-                        )
-                    }
-                />
-
                 <Route
                     path="/profile"
                     element={
