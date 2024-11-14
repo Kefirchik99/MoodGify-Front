@@ -1,6 +1,8 @@
 // Avatar.jsx
 import React from 'react';
-import { toSvg } from 'jdenticon'; // Import `toSvg` directly
+
+import { toSvg } from 'jdenticon';
+
 
 const Avatar = ({ value, size = 100 }) => {
     const svgString = toSvg(value, size); // Use `toSvg` from jdenticon
