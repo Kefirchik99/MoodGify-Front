@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@blueprintjs/core": "^5.14.0",
+    "@blueprintjs/core": "^5.14.1",
     "@blueprintjs/icons": "^5.14.0",
     "@blueprintjs/popover2": "^2.1.12",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -22,6 +22,7 @@
     "react": "^18.3.1",
     "react-calendar": "^5.1.0",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
     "react-router-dom": "^6.28.0",
     "sass": "^1.80.7"
   },

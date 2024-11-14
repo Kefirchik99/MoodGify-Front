@@ -2,6 +2,7 @@
 import React from 'react';
 
 import PostCalendar from './PostCalendar';
+import MoodList from './MoodList';
 
 const Calendar = () => {
     return (
@@ -12,6 +13,7 @@ const Calendar = () => {
         </div>
 
         <PostCalendar />
+        <MoodList />
 
         </>
     );
