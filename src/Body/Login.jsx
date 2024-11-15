@@ -17,7 +17,7 @@ const Login = () => {
         setError('');
         try {
             await loginWithEmail(email, password);
-            navigate('/welcome'); // Redirect to WelcomePage after successful login
+            navigate('/profile');
         } catch (error) {
             setError(error.message);
         }
