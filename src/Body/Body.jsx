@@ -17,7 +17,11 @@ import ProtectedRoute from './ProtectedRoute';
 import { useAuth } from '../providers/authContext';
 
 const Body = () => {
-    const { user, hasSeenWelcome, setHasSeenWelcome } = useAuth();
+    const { user, loading, hasSeenWelcome, setHasSeenWelcome } = useAuth();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="content">
@@ -34,7 +38,6 @@ const Body = () => {
                 <Route path="/cookie-policy" element={<CookiePolicy />} />
                 <Route path="/cookie-declined" element={<CookieDeclined />} />
 
-                {/* Conditional Redirect to WelcomePage or Profile */}
                 <Route
                     path="/profile"
                     element={
