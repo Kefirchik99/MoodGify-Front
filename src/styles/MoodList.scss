@@ -1,0 +1,48 @@
+.mood-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Две колонки */
+    grid-template-rows: repeat(5, auto); /* Пять строк в каждой колонке */
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .mood-item {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 5px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  .mood-info {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .mood-icon {
+    font-size: 24px;
+    color: #007bff;
+    margin-right: 10px;
+  }
+  
+  .mood-details {
+    .mood-name {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 5px;
+    }
+  
+    .mood-time {
+      font-size: 0.9rem;
+      color: #555;
+    }
+  }
+  
+  .mood-gif img {
+    width: 100px;
+    height: auto;
+    border-radius: 4px;
+  }
+  
