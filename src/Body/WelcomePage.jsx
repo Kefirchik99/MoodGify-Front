@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../providers/authContext';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Ensure db is imported correctly
+import { db } from '../firebase';
 import { Link } from 'react-router-dom';
 
 const WelcomePage = ({ onSeen }) => {
@@ -19,15 +19,15 @@ const WelcomePage = ({ onSeen }) => {
                     setUsername(docSnap.data().username || 'User');
                 }
             }
-            setLoading(false); // Stop loading after username is fetched
+            setLoading(false);
+            if (onSeen) onSeen();
         };
 
         fetchUsername();
-        onSeen();
     }, [user, onSeen]);
 
     if (loading) {
-        return <p>Loading...</p>; // Optionally show a loading indicator
+        return <p>Loading...</p>;
     }
 
     return (

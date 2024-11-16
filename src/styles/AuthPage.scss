@@ -1,0 +1,5 @@
+@import './form-layout';
+
+.auth-page {
+    @extend .form-container;
+}

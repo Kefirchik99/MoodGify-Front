@@ -1,9 +1,9 @@
-// Register.jsx
 import React, { useState } from 'react';
-import { InputGroup, Button, FormGroup } from '@blueprintjs/core';
+import { InputGroup, Button } from '@blueprintjs/core';
 import { registerWithEmail } from '../services/firebaseAuth';
 import { Link } from 'react-router-dom';
-import "../styles/Register.scss";
+import AuthPage from './AuthPage';
+import '../styles/form-layout.scss';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -19,81 +19,62 @@ const Register = () => {
         setSuccessMessage('');
 
         if (password !== confirmPassword) {
-            setErrorMessage("Passwords do not match.");
+            setErrorMessage('Passwords do not match.');
             return;
         }
 
         try {
             await registerWithEmail(email, password, username);
-            setSuccessMessage("Registration successful! Please check your email to verify your account.");
-        } catch (error) {
-            setErrorMessage(error.message);
+            setSuccessMessage('Registration successful! Please check your email to verify your account.');
+        } catch (err) {
+            setErrorMessage(err.message);
         }
     };
 
     return (
-        <div className="register-page">
-            <h2>Create Your Account</h2>
-
-            {/* Display messages */}
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {successMessage && <p className="success-message">{successMessage}</p>}
-
-            <form onSubmit={handleRegister} className="register-form">
-                <FormGroup label="Username" labelFor="username-input" labelInfo="(required)">
+        <AuthPage title="Create Your Account" errorMessage={errorMessage} successMessage={successMessage}>
+            <form onSubmit={handleRegister} className="form-layout">
+                <div className="form-group">
                     <InputGroup
-                        id="username-input"
                         leftIcon="user"
                         placeholder="Choose a username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        autoComplete="username"
                     />
-                </FormGroup>
-
-                <FormGroup label="Email" labelFor="email-input" labelInfo="(required)">
+                </div>
+                <div className="form-group">
                     <InputGroup
-                        id="email-input"
                         leftIcon="envelope"
                         placeholder="Enter your email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="email"
                     />
-                </FormGroup>
-
-                <FormGroup label="Password" labelFor="password-input" labelInfo="(required)">
+                </div>
+                <div className="form-group">
                     <InputGroup
-                        id="password-input"
-                        type="password"
                         leftIcon="lock"
                         placeholder="Enter your password"
+                        type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        autoComplete="new-password"
                     />
-                </FormGroup>
-
-                <FormGroup label="Confirm Password" labelFor="confirm-password-input" labelInfo="(required)">
+                </div>
+                <div className="form-group">
                     <InputGroup
-                        id="confirm-password-input"
-                        type="password"
                         leftIcon="lock"
                         placeholder="Confirm your password"
+                        type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        autoComplete="new-password"
                     />
-                </FormGroup>
-
-                <Button type="submit" intent="primary" text="Register" fill />
+                </div>
+                <Button type="submit" className="form-button" intent="primary" text="Register" />
             </form>
-
             <div className="extra-links">
                 <Link to="/login">Already have an account? Login here.</Link>
             </div>
-        </div>
+        </AuthPage>
     );
 };
 
