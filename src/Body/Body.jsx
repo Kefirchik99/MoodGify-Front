@@ -2,7 +2,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainPage from './MainPage';
-import Calendar from './Calendar';
+import PostCalendar from './PostCalendar';
 import Profile from './Profile';
 import Settings from './Settings';
 import Register from './Register';
@@ -16,6 +16,8 @@ import WelcomePage from './WelcomePage';
 import ProtectedRoute from './ProtectedRoute';
 import { useAuth } from '../providers/authContext';
 
+
+
 const Body = () => {
     const { user, hasSeenWelcome, setHasSeenWelcome } = useAuth();
 
@@ -24,7 +26,7 @@ const Body = () => {
             <Routes>
                 <Route path="/" element={<MainPage />} />
                 <Route path="/home" element={<MainPage />} />
-                <Route path="/timeline" element={<Calendar />} />
+                <Route path="/timeline" element={<PostCalendar />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/register" element={<Register />} />
@@ -63,6 +65,8 @@ const Body = () => {
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+
+            
         </div>
     );
 };
