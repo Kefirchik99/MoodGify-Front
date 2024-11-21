@@ -1,10 +1,9 @@
-// Body.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainPage from './MainPage';
 import PostCalendar from './PostCalendar';
 import Profile from './Profile';
-import Settings from './Settings';
+import Settings from '../Body/SettingsPage/Settings';
 import Register from './Register';
 import ForgotPwd from './ForgotPwd';
 import Terms from './Terms';
@@ -16,19 +15,39 @@ import WelcomePage from './WelcomePage';
 import ProtectedRoute from './ProtectedRoute';
 import { useAuth } from '../providers/authContext';
 
-
-
 const Body = () => {
     const { user, loading, hasSeenWelcome, setHasSeenWelcome } = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="loading-spinner">
+                <p>Loading...</p>
+            </div>
+        );
     }
+
+    const renderProfileRoute = () => {
+        if (!user) return <Navigate to="/login" replace />;
+        if (!hasSeenWelcome) return <Navigate to="/welcome" replace />;
+        return (
+            <ProtectedRoute>
+                <Profile />
+            </ProtectedRoute>
+        );
+    };
+
+    const renderWelcomeRoute = () => {
+        return user ? (
+            <WelcomePage onSeen={() => setHasSeenWelcome(true)} />
+        ) : (
+            <Navigate to="/login" replace />
+        );
+    };
 
     return (
         <div className="content">
             <Routes>
-                <Route path="/" element={<MainPage />} />
+                <Route path="/" element={<Navigate to="/home" replace />} />
                 <Route path="/home" element={<MainPage />} />
                 <Route path="/timeline" element={<PostCalendar />} />
                 <Route path="/login" element={<Login />} />
@@ -39,37 +58,10 @@ const Body = () => {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/cookie-policy" element={<CookiePolicy />} />
                 <Route path="/cookie-declined" element={<CookieDeclined />} />
-
-                <Route
-                    path="/profile"
-                    element={
-                        user ? (
-                            hasSeenWelcome ? (
-                                <ProtectedRoute><Profile /></ProtectedRoute>
-                            ) : (
-                                <Navigate to="/welcome" replace />
-                            )
-                        ) : (
-                            <Navigate to="/login" replace />
-                        )
-                    }
-                />
-
-                <Route
-                    path="/welcome"
-                    element={
-                        user ? (
-                            <WelcomePage onSeen={() => setHasSeenWelcome(true)} />
-                        ) : (
-                            <Navigate to="/login" replace />
-                        )
-                    }
-                />
-
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="/profile" element={renderProfileRoute()} />
+                <Route path="/welcome" element={renderWelcomeRoute()} />
+                <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>
-
-            
         </div>
     );
 };

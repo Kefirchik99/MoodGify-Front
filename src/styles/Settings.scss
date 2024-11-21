@@ -1,5 +1,6 @@
 .settings-page {
-    max-width: 400px;
+    min-width: 350px;
+    min-height: 600px;
     margin: 0 auto;
     padding: 20px;
     background-color: #f9f9f9;
@@ -9,40 +10,45 @@
     h2 {
         text-align: center;
         margin-bottom: 20px;
-    }
-
-    .settings-avatar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-
-        .avatar {
-            margin-bottom: 10px;
-        }
-    }
-
-    .settings-avatar-btn {
-        margin-top: 10px;
+        font-size: 1.8rem;
     }
 
     .settings-divider {
         margin: 20px 0;
     }
 
-    .error-message {
-        color: red;
+    .current-password-section {
+        margin-top: 20px;
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .bp5-input {
+            width: 100%;
+        }
+    }
+
+    .settings-submit-btn {
+        width: 100%;
+        margin-top: 15px;
+        padding: 10px;
+    }
+
+    .error-message,
+    .success-message {
         text-align: center;
         margin-top: 10px;
+        max-width: 400px;
+    }
+
+    .error-message {
+        color: red;
     }
 
     .success-message {
         color: green;
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    .settings-password-btn {
-        width: 100%;
     }
 }

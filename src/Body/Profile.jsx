@@ -1,8 +1,7 @@
-// Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { Button, Divider } from '@blueprintjs/core';
 import { useAuth } from '../providers/authContext';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { Link, Navigate } from 'react-router-dom';
 import Avatar from './Avatar';
 import { db } from '../firebase'; // Ensure db is imported correctly
@@ -10,35 +9,47 @@ import "../styles/Profile.scss";
 
 const Profile = () => {
     const { user, logout, autoLogoutMessage } = useAuth();
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState('User');
     const [registrationDate, setRegistrationDate] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true); // Loading state to control when content displays
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            if (user) {
-                const userDoc = doc(db, 'users', user.uid);
-                const docSnap = await getDoc(userDoc);
+        if (!user) return;
 
+        const userDocRef = doc(db, 'users', user.uid);
+
+        // Listen for real-time updates
+        const unsubscribe = onSnapshot(
+            userDocRef,
+            (docSnap) => {
                 if (docSnap.exists()) {
                     const userData = docSnap.data();
                     setUsername(userData.username || 'User');
-
-                    // Format registration date to "day-month-year"
-                    const registrationDate = new Date(user.metadata.creationTime);
-                    const formattedDate = registrationDate.toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                    });
-                    setRegistrationDate(formattedDate);
+                } else {
+                    setErrorMessage('User data not found.');
                 }
+            },
+            (error) => {
+                console.error('Error fetching user data:', error.message);
+                setErrorMessage('Failed to fetch user data. Please try again later.');
             }
-            setLoading(false);
-        };
-        fetchUserProfile();
+        );
+
+        // Set registration date only once, as it doesn't change
+        const regDate = new Date(user.metadata.creationTime);
+        setRegistrationDate(
+            regDate.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            })
+        );
+
+        setLoading(false);
+
+        return () => unsubscribe(); // Cleanup subscription
     }, [user]);
 
     if (!user) {
@@ -66,6 +77,7 @@ const Profile = () => {
 
             <Button intent="danger" onClick={logout} text="Logout" className="logout-button" />
             <Divider className="terms-divider" />
+            <Link to="/settings" className="settings-link">Go to Settings</Link> {/* Link to settings page */}
         </div>
     );
 };
