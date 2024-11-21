@@ -1,4 +1,3 @@
-// firebaseAuth.js
 import { auth, db } from '../firebase'; // Use the imported db from firebase.js
 import {
     createUserWithEmailAndPassword,
@@ -7,7 +6,16 @@ import {
     sendEmailVerification
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { Filter } from 'bad-words';// Import Filter correctly
+import { Filter } from 'bad-words';
+
+import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
+
+// Reauthenticate the user
+export const reauthenticate = async (currentPassword) => {
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+};
 
 const filter = new Filter(); // Instantiate the profanity filter
 
@@ -20,9 +28,22 @@ export const checkUsernameAvailability = async (username) => {
 
 // Save the username to Firestore
 export const saveUsername = async (uid, username) => {
-    // Store the username in a collection for easy look-up and in the user's profile
     await setDoc(doc(db, "usernames", username), { uid });
     await setDoc(doc(db, "users", uid), { username }, { merge: true });
+};
+// Change user password
+export const changePassword = async (currentPassword, newPassword) => {
+    try {
+        const user = auth.currentUser;
+        const credential = firebase.auth.EmailAuthProvider.credential(
+            user.email,
+            currentPassword
+        );
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+    } catch (error) {
+        throw new Error(error.message || "Failed to change password.");
+    }
 };
 
 // Register a new user and save the username
