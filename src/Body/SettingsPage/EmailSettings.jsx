@@ -1,31 +1,17 @@
-import React, { useState } from 'react';
-import { InputGroup, Button } from '@blueprintjs/core';
-import { useAuth } from '../../providers/authContext';
+// EmailSettings.jsx
 
-const EmailSettings = () => {
-    const { user, changeUserEmail } = useAuth();
-    const [newEmail, setNewEmail] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+import React from 'react';
+import { InputGroup } from '@blueprintjs/core';
 
-    const handleEmailChange = async () => {
-        if (!newEmail.trim()) {
-            setErrorMessage('New email cannot be empty.');
-            return;
-        }
-
-        try {
-            await changeUserEmail(newEmail);
-            setSuccessMessage('Email updated successfully!');
-            setErrorMessage('');
-        } catch (error) {
-            setErrorMessage('Failed to update email. Ensure your current password is correct.');
-            setSuccessMessage('');
-        }
-    };
-
+const EmailSettings = ({ newEmail, setNewEmail, currentEmail }) => {
     return (
         <div className="email-settings">
+            <label htmlFor="current-email">Current Email</label>
+            <InputGroup
+                id="current-email"
+                value={currentEmail}
+                disabled
+            />
             <label htmlFor="new-email-input">New Email</label>
             <InputGroup
                 id="new-email-input"
@@ -33,9 +19,6 @@ const EmailSettings = () => {
                 onChange={(e) => setNewEmail(e.target.value)}
                 placeholder="Enter new email"
             />
-
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {successMessage && <p className="success-message">{successMessage}</p>}
         </div>
     );
 };

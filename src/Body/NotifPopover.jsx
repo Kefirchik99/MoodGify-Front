@@ -1,3 +1,5 @@
+// NotificationsPopover.jsx
+
 import React from 'react';
 import { Button } from "@blueprintjs/core";
 import { useNotifications } from '../providers/NotificationsContext';

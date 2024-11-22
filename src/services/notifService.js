@@ -1,24 +1,58 @@
-let notifications = [
-    { id: 1, title: 'Welcome', message: 'Thanks for joining Moodgify!' },
-    { id: 2, title: 'Update', message: 'New features have been added to your dashboard.' },
-];
+// notifService.js
 
-// Get all notifications
-export const getNotifications = () => [...notifications];
+import { db } from '../firebase';
+import {
+    collection,
+    addDoc,
+    deleteDoc,
+    getDocs,
+    doc,
+    writeBatch,
+    query,
+    orderBy,
+    onSnapshot,
+} from 'firebase/firestore';
 
-// Add a new notification
-export const addNotification = (title, message) => {
-    const newNotification = { id: Date.now(), title, message };
-    notifications = [newNotification, ...notifications];
-    return newNotification;
+// Fetch notifications in real-time
+export const getNotifications = (userId, setNotifications) => {
+    const notificationsRef = collection(db, 'users', userId, 'notifications');
+    const notificationsQuery = query(notificationsRef, orderBy('timestamp', 'desc'));
+
+    return onSnapshot(notificationsQuery, (snapshot) => {
+        const notificationsData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setNotifications(notificationsData);
+    });
 };
 
-// Remove a specific notification by ID
-export const removeNotification = (id) => {
-    notifications = notifications.filter((notification) => notification.id !== id);
+// Add a new notification
+export const addNotification = async (userId, title, message) => {
+    const notificationsRef = collection(db, 'users', userId, 'notifications');
+    await addDoc(notificationsRef, {
+        title,
+        message,
+        timestamp: new Date(),
+        read: false,
+    });
+};
+
+// Remove a notification
+export const removeNotification = async (userId, notificationId) => {
+    const notificationDocRef = doc(db, 'users', userId, 'notifications', notificationId);
+    await deleteDoc(notificationDocRef);
 };
 
 // Clear all notifications
-export const clearNotifications = () => {
-    notifications = [];
+export const clearNotifications = async (userId) => {
+    const notificationsRef = collection(db, 'users', userId, 'notifications');
+    const notificationsSnapshot = await getDocs(notificationsRef);
+    const batch = writeBatch(db);
+
+    notificationsSnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+    });
+
+    await batch.commit();
 };

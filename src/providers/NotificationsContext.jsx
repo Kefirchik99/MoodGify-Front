@@ -1,27 +1,50 @@
 // NotificationsContext.jsx
-import React, { createContext, useContext, useState } from 'react';
-import { getNotifications, addNotification, removeNotification, clearNotifications } from '../services/notifService';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+    getNotifications,
+    addNotification,
+    removeNotification,
+    clearNotifications,
+} from '../services/notifService';
+import { useAuth } from './authContext';
 
 const NotificationsContext = createContext();
 
 export const useNotifications = () => useContext(NotificationsContext);
 
 export const NotificationsProvider = ({ children }) => {
-    const [notifications, setNotifications] = useState(getNotifications());
+    const { user } = useAuth();
+    const [notifications, setNotifications] = useState([]);
 
-    const add = (title, message) => {
-        const newNotification = addNotification(title, message);
-        setNotifications(getNotifications());
-        return newNotification;
+    useEffect(() => {
+        let unsubscribe = () => { };
+
+        if (user) {
+            // Start real-time listener for notifications
+            unsubscribe = getNotifications(user.uid, setNotifications);
+        } else {
+            setNotifications([]);
+        }
+
+        return () => {
+            unsubscribe();
+        };
+    }, [user]);
+
+    const add = async (title, message) => {
+        if (!user) return;
+        await addNotification(user.uid, title, message);
     };
 
-    const remove = (id) => {
-        removeNotification(id);
-        setNotifications(getNotifications());
+    const remove = async (id) => {
+        if (!user) return;
+        await removeNotification(user.uid, id);
     };
 
-    const clearAll = () => {
-        clearNotifications();
+    const clearAll = async () => {
+        if (!user) return;
+        await clearNotifications(user.uid);
         setNotifications([]);
     };
 

@@ -1,20 +1,23 @@
 // Navbar.jsx
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Tooltip, Button, Popover, Position, Icon } from '@blueprintjs/core';
 import NotificationsPopover from '../Body/NotifPopover';
 import { useAuth } from '../providers/authContext';
+import { useNotifications } from '../providers/NotificationsContext';
 import "@blueprintjs/core/lib/css/blueprint.css";
 import '../styles/Navigation.scss';
 
 const Navbar = () => {
     const { user, loading } = useAuth();
-    const [hasNewNotifications, setHasNewNotifications] = useState(true);
+    const { notifications } = useNotifications();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+    const hasNewNotifications = notifications.length > 0;
 
     const handleNotificationsClick = () => {
         setIsPopoverOpen(!isPopoverOpen);
-        setHasNewNotifications(false);
     };
 
     return (
@@ -31,7 +34,7 @@ const Navbar = () => {
                     <Link to='/profile' className="bp5-button bp5-minimal bp5-icon-user"></Link>
                 </Tooltip>
 
-                {/* Notifications Icon with dot */}
+                {/* Notifications Icon with indicator */}
                 {(loading || user) && (
                     <Tooltip content="Notifications" disabled={isPopoverOpen}>
                         <Popover
@@ -45,9 +48,9 @@ const Navbar = () => {
                                 onClick={handleNotificationsClick}
                                 icon={<Icon icon="notifications" />}
                             >
-                                <span
-                                    className={`notification-indicator ${hasNewNotifications ? 'visible' : ''}`}
-                                />
+                                {hasNewNotifications && (
+                                    <span className="notification-indicator" />
+                                )}
                             </Button>
                         </Popover>
                     </Tooltip>
