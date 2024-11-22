@@ -1,3 +1,5 @@
+// firebaseAuth.js
+
 import { auth, db } from '../firebase';
 import {
     createUserWithEmailAndPassword,
@@ -8,10 +10,10 @@ import {
     updatePassword,
     updateEmail,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { Filter } from 'bad-words'; // Correct import for bad-words
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { Filter } from 'bad-words';
 
-const filter = new Filter(); // Instantiate the profanity filter
+const filter = new Filter();
 
 // Check if the username is already taken
 export const checkUsernameAvailability = async (username) => {
@@ -91,5 +93,34 @@ export const changeEmail = async (currentPassword, newEmail) => {
     } catch (error) {
         console.error('Failed to update email:', error.message);
         throw new Error('Failed to update email.');
+    }
+};
+
+// **Add the changeUserName function here**
+export const changeUserName = async (uid, newUsername, currentUserName) => {
+    try {
+        // Check for profanity
+        if (filter.isProfane(newUsername)) {
+            throw new Error('Please choose a more appropriate username.');
+        }
+
+        // Check if the new username is available
+        const isAvailable = await checkUsernameAvailability(newUsername);
+        if (!isAvailable) {
+            throw new Error('Username is already taken. Please choose another.');
+        }
+
+        // Update the username in the 'users' collection
+        await setDoc(doc(db, 'users', uid), { username: newUsername }, { merge: true });
+
+        // Update the 'usernames' collection
+        if (currentUserName) {
+            const oldUsernameDocRef = doc(db, 'usernames', currentUserName);
+            await deleteDoc(oldUsernameDocRef);
+        }
+        await setDoc(doc(db, 'usernames', newUsername), { uid });
+    } catch (error) {
+        console.error('Error changing username:', error.message);
+        throw new Error(error.message || 'Failed to change username.');
     }
 };

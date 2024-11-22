@@ -1,21 +1,32 @@
+// authContext.jsx
+
 import { useContext, createContext, useEffect, useState } from 'react';
 import { auth } from '../firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { reauthenticate, changePassword, changeEmail } from '../services/firebaseAuth';
+import {
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut,
+} from 'firebase/auth';
+import {
+    reauthenticate,
+    changePassword,
+    changeEmail,
+    changeUserName, // Import changeUserName
+} from '../services/firebaseAuth';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [hasSeenWelcome, setHasSeenWelcome] = useState(false); // Tracks WelcomePage status
+    const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
     // Log out the user
     const logout = async () => {
         try {
             await signOut(auth);
             setUser(null);
-            setHasSeenWelcome(false); // Reset welcome flag on logout
+            setHasSeenWelcome(false);
         } catch (error) {
             console.error('Error during logout:', error.message);
             throw new Error('Failed to log out.');
@@ -27,14 +38,14 @@ export const AuthProvider = ({ children }) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             setUser(userCredential.user);
-            setHasSeenWelcome(false); // Reset welcome flag on new login
+            setHasSeenWelcome(false);
         } catch (error) {
             console.error('Error during login:', error.message);
             throw new Error('Failed to log in. Please check your credentials.');
         }
     };
 
-    // Reauthenticate user (for sensitive actions like email/password updates)
+    // Reauthenticate user
     const reauthenticateUser = async (currentPassword) => {
         try {
             await reauthenticate(currentPassword);
@@ -64,6 +75,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Change user username
+    const updateUserName = async (newUsername, currentUserName) => {
+        try {
+            await changeUserName(user.uid, newUsername, currentUserName);
+        } catch (error) {
+            console.error('Error changing username:', error.message);
+            throw new Error(error.message || 'Failed to change username.');
+        }
+    };
+
     // Monitor authentication state
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -85,7 +106,8 @@ export const AuthProvider = ({ children }) => {
                 updatePassword,
                 updateEmail,
                 hasSeenWelcome,
-                setHasSeenWelcome, // Allow other components to update this flag
+                setHasSeenWelcome,
+                updateUserName, // Provide updateUserName in context
             }}
         >
             {children}
