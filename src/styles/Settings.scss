@@ -1,0 +1,54 @@
+.settings-page {
+    min-width: 350px;
+    min-height: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+    }
+
+    .settings-divider {
+        margin: 20px 0;
+    }
+
+    .current-password-section {
+        margin-top: 20px;
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .bp5-input {
+            width: 100%;
+        }
+    }
+
+    .settings-submit-btn {
+        width: 100%;
+        margin-top: 15px;
+        padding: 10px;
+    }
+
+    .error-message,
+    .success-message {
+        text-align: center;
+        margin-top: 10px;
+        max-width: 400px;
+    }
+
+    .error-message {
+        color: red;
+    }
+
+    .success-message {
+        color: green;
+    }
+}

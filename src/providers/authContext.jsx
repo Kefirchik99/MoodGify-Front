@@ -1,70 +1,115 @@
-// authContext.js
+// authContext.jsx
+
 import { useContext, createContext, useEffect, useState } from 'react';
 import { auth } from '../firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut,
+} from 'firebase/auth';
+import {
+    reauthenticate,
+    changePassword,
+    changeEmail,
+    changeUserName, // Import changeUserName
+} from '../services/firebaseAuth';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [autoLogoutMessage, setAutoLogoutMessage] = useState("");
     const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
-    const inactivityTimeout = 15 * 60 * 1000;
-    let logoutTimer;
-
-    const resetTimer = () => {
-        clearTimeout(logoutTimer);
-        logoutTimer = setTimeout(handleAutoLogout, inactivityTimeout);
-    };
-
-    const handleAutoLogout = () => {
-        signOut(auth);
-        setUser(null);
-        setAutoLogoutMessage("You were logged out due to inactivity.");
-    };
-
+    // Log out the user
     const logout = async () => {
-        clearTimeout(logoutTimer);
-        await signOut(auth);
-        setUser(null);
-        setAutoLogoutMessage("");
-        setHasSeenWelcome(false);
+        try {
+            await signOut(auth);
+            setUser(null);
+            setHasSeenWelcome(false);
+        } catch (error) {
+            console.error('Error during logout:', error.message);
+            throw new Error('Failed to log out.');
+        }
     };
 
+    // Log in the user
     const loginWithEmail = async (email, password) => {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        setUser(userCredential.user);
-        setHasSeenWelcome(false);
-        setLoading(false);
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            setUser(userCredential.user);
+            setHasSeenWelcome(false);
+        } catch (error) {
+            console.error('Error during login:', error.message);
+            throw new Error('Failed to log in. Please check your credentials.');
+        }
     };
 
+    // Reauthenticate user
+    const reauthenticateUser = async (currentPassword) => {
+        try {
+            await reauthenticate(currentPassword);
+        } catch (error) {
+            console.error('Error during reauthentication:', error.message);
+            throw new Error(error.message || 'Failed to reauthenticate. Ensure the current password is correct.');
+        }
+    };
+
+    // Update user password
+    const updatePassword = async (currentPassword, newPassword) => {
+        try {
+            return await changePassword(currentPassword, newPassword);
+        } catch (error) {
+            console.error('Error updating password:', error.message);
+            throw new Error(error.message || 'Failed to update password.');
+        }
+    };
+
+    // Update user email
+    const updateEmail = async (currentPassword, newEmail) => {
+        try {
+            return await changeEmail(currentPassword, newEmail);
+        } catch (error) {
+            console.error('Error updating email:', error.message);
+            throw new Error(error.message || 'Failed to update email.');
+        }
+    };
+
+    // Change user username
+    const updateUserName = async (newUsername, currentUserName) => {
+        try {
+            await changeUserName(user.uid, newUsername, currentUserName);
+        } catch (error) {
+            console.error('Error changing username:', error.message);
+            throw new Error(error.message || 'Failed to change username.');
+        }
+    };
+
+    // Monitor authentication state
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
             setLoading(false);
-            if (currentUser) {
-                resetTimer();
-                window.addEventListener("mousemove", resetTimer);
-                window.addEventListener("keypress", resetTimer);
-            } else {
-                clearTimeout(logoutTimer);
-                window.removeEventListener("mousemove", resetTimer);
-                window.removeEventListener("keypress", resetTimer);
-            }
         });
 
-        return () => {
-            unsubscribe();
-            clearTimeout(logoutTimer);
-            window.removeEventListener("mousemove", resetTimer);
-            window.removeEventListener("keypress", resetTimer);
-        };
+        return () => unsubscribe();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loading, loginWithEmail, logout, autoLogoutMessage, hasSeenWelcome, setHasSeenWelcome }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                loading,
+                loginWithEmail,
+                logout,
+                reauthenticateUser,
+                updatePassword,
+                updateEmail,
+                hasSeenWelcome,
+                setHasSeenWelcome,
+                updateUserName, // Provide updateUserName in context
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
