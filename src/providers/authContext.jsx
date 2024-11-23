@@ -1,4 +1,4 @@
-// authContext.jsx
+// AuthContext.jsx
 
 import { useContext, createContext, useEffect, useState } from 'react';
 import { auth } from '../firebase';
@@ -21,6 +21,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [avatarSeed, setAvatarSeed] = useState(null);
+    const [username, setUsername] = useState(null); // Added username state
     const [loading, setLoading] = useState(true);
     const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
@@ -29,25 +30,29 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
-                // Fetch avatarSeed from Firestore
+                // Fetch avatarSeed and username from Firestore
                 try {
                     const userDocRef = doc(db, 'users', currentUser.uid);
                     const docSnap = await getDoc(userDocRef);
                     if (docSnap.exists()) {
                         const userData = docSnap.data();
                         setAvatarSeed(userData.avatarSeed || currentUser.uid);
+                        setUsername(userData.username || ''); // Set username
                     } else {
-                        // User document doesn't exist, set default avatarSeed
+                        // User document doesn't exist, set defaults
                         setAvatarSeed(currentUser.uid);
+                        setUsername('');
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error.message);
-                    // Set default avatarSeed in case of error
+                    // Set defaults in case of error
                     setAvatarSeed(currentUser.uid);
+                    setUsername('');
                 }
             } else {
                 setUser(null);
                 setAvatarSeed(null);
+                setUsername(null);
             }
             setLoading(false);
         });
@@ -61,7 +66,7 @@ export const AuthProvider = ({ children }) => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             setUser(userCredential.user);
             setHasSeenWelcome(false);
-            // AvatarSeed will be fetched by onAuthStateChanged
+            // AvatarSeed and username will be fetched by onAuthStateChanged
         } catch (error) {
             console.error('Error during login:', error.message);
             throw new Error('Failed to log in. Please check your credentials.');
@@ -75,6 +80,7 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             setHasSeenWelcome(false);
             setAvatarSeed(null);
+            setUsername(null); // Reset username
         } catch (error) {
             console.error('Error during logout:', error.message);
             throw new Error('Failed to log out.');
@@ -115,6 +121,7 @@ export const AuthProvider = ({ children }) => {
     const updateUserName = async (newUsername, currentUserName) => {
         try {
             await changeUserName(user.uid, newUsername, currentUserName);
+            setUsername(newUsername); // Update username in context
         } catch (error) {
             console.error('Error changing username:', error.message);
             throw new Error(error.message || 'Failed to change username.');
@@ -127,7 +134,9 @@ export const AuthProvider = ({ children }) => {
                 user,
                 loading,
                 avatarSeed,
-                setAvatarSeed, // Expose setAvatarSeed to update it when needed
+                setAvatarSeed,
+                username,
+                setUsername,
                 loginWithEmail,
                 logout,
                 reauthenticateUser,

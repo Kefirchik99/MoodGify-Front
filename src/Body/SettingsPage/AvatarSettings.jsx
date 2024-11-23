@@ -8,7 +8,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 const AvatarSettings = () => {
-    const { user, avatarSeed, setAvatarSeed } = useAuth();
+    const { user, setAvatarSeed } = useAuth(); // Only destructuring setAvatarSeed
 
     const handleGenerateNewAvatar = async () => {
         const newSeed = Math.floor(Math.random() * 100000);
