@@ -1,3 +1,5 @@
+// Profile.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Button, Divider } from '@blueprintjs/core';
 import { useAuth } from '../providers/authContext';
@@ -10,9 +12,7 @@ import "../styles/Profile.scss";
 const Profile = () => {
     const { user, logout, autoLogoutMessage } = useAuth();
     const [username, setUsername] = useState('User');
-    const [avatarSeed, setAvatarSeed] = useState(user.uid); // Initialize with user ID
     const [registrationDate, setRegistrationDate] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -27,14 +27,15 @@ const Profile = () => {
                 if (docSnap.exists()) {
                     const userData = docSnap.data();
                     setUsername(userData.username || 'User');
-                    setAvatarSeed(userData.avatarSeed || user.uid); // Update avatar seed
                 } else {
                     setErrorMessage('User data not found.');
                 }
+                setLoading(false);
             },
             (error) => {
                 console.error('Error fetching user data:', error.message);
                 setErrorMessage('Failed to fetch user data. Please try again later.');
+                setLoading(false);
             }
         );
 
@@ -46,8 +47,6 @@ const Profile = () => {
                 year: 'numeric',
             })
         );
-
-        setLoading(false);
 
         return () => unsubscribe();
     }, [user]);
@@ -63,14 +62,13 @@ const Profile = () => {
     return (
         <div className="profile-page">
             <h2>Your Profile</h2>
-            <Avatar className="profile-avatar" value={avatarSeed} size={100} />
+            <Avatar size={100} />
             <div className="profile-info">
                 <p><strong>Username:</strong> <span>{username}</span></p>
                 <p><strong>Email:</strong> <span>{user.email}</span></p>
                 <p><strong>Registered:</strong> <span>{registrationDate}</span></p>
             </div>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {successMessage && <p className="success-message">{successMessage}</p>}
             {autoLogoutMessage && <p className="auto-logout-message">{autoLogoutMessage}</p>}
             <Button intent="danger" onClick={logout} text="Logout" className="logout-button" />
             <Divider className="terms-divider" />

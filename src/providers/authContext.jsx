@@ -11,27 +11,49 @@ import {
     reauthenticate,
     changePassword,
     changeEmail,
-    changeUserName, // Import changeUserName
+    changeUserName,
 } from '../services/firebaseAuth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [avatarSeed, setAvatarSeed] = useState(null);
     const [loading, setLoading] = useState(true);
     const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
-    // Log out the user
-    const logout = async () => {
-        try {
-            await signOut(auth);
-            setUser(null);
-            setHasSeenWelcome(false);
-        } catch (error) {
-            console.error('Error during logout:', error.message);
-            throw new Error('Failed to log out.');
-        }
-    };
+    // Fetch user data when authentication state changes
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
+                // Fetch avatarSeed from Firestore
+                try {
+                    const userDocRef = doc(db, 'users', currentUser.uid);
+                    const docSnap = await getDoc(userDocRef);
+                    if (docSnap.exists()) {
+                        const userData = docSnap.data();
+                        setAvatarSeed(userData.avatarSeed || currentUser.uid);
+                    } else {
+                        // User document doesn't exist, set default avatarSeed
+                        setAvatarSeed(currentUser.uid);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error.message);
+                    // Set default avatarSeed in case of error
+                    setAvatarSeed(currentUser.uid);
+                }
+            } else {
+                setUser(null);
+                setAvatarSeed(null);
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     // Log in the user
     const loginWithEmail = async (email, password) => {
@@ -39,9 +61,23 @@ export const AuthProvider = ({ children }) => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             setUser(userCredential.user);
             setHasSeenWelcome(false);
+            // AvatarSeed will be fetched by onAuthStateChanged
         } catch (error) {
             console.error('Error during login:', error.message);
             throw new Error('Failed to log in. Please check your credentials.');
+        }
+    };
+
+    // Log out the user
+    const logout = async () => {
+        try {
+            await signOut(auth);
+            setUser(null);
+            setHasSeenWelcome(false);
+            setAvatarSeed(null);
+        } catch (error) {
+            console.error('Error during logout:', error.message);
+            throw new Error('Failed to log out.');
         }
     };
 
@@ -85,21 +121,13 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Monitor authentication state
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-            setLoading(false);
-        });
-
-        return () => unsubscribe();
-    }, []);
-
     return (
         <AuthContext.Provider
             value={{
                 user,
                 loading,
+                avatarSeed,
+                setAvatarSeed, // Expose setAvatarSeed to update it when needed
                 loginWithEmail,
                 logout,
                 reauthenticateUser,
@@ -107,7 +135,7 @@ export const AuthProvider = ({ children }) => {
                 updateEmail,
                 hasSeenWelcome,
                 setHasSeenWelcome,
-                updateUserName, // Provide updateUserName in context
+                updateUserName,
             }}
         >
             {children}
