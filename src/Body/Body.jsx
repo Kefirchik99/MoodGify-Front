@@ -51,7 +51,14 @@ const Body = () => {
                 <Route path="/home" element={<MainPage />} />
                 <Route path="/timeline" element={<PostCalendar />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/settings" element={<Settings />} />
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <Settings />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/register" element={<Register />} />
                 <Route path="/recover-password" element={<ForgotPwd />} />
                 <Route path="/terms" element={<Terms />} />
