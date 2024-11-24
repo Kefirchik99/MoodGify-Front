@@ -1,6 +1,4 @@
-// Settings.jsx
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Divider, InputGroup } from '@blueprintjs/core';
 import AvatarSettings from './AvatarSettings';
 import UsernameSettings from './UsernameSettings';
@@ -9,6 +7,7 @@ import PasswordSettings from './PasswordSettings';
 import { useAuth } from '../../providers/authContext';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { Navigate } from 'react-router-dom';
 import "../../styles/Settings.scss";
 
 const Settings = () => {
@@ -19,6 +18,10 @@ const Settings = () => {
     const [newUsername, setNewUsername] = useState('');
     const [currentUsername, setCurrentUsername] = useState('');
     const [newAvatarSeed, setNewAvatarSeed] = useState(null);
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
 
     const handleMakeChanges = async (e) => {
         e.preventDefault();
@@ -42,8 +45,6 @@ const Settings = () => {
                 const userDocRef = doc(db, 'users', user.uid);
                 await setDoc(userDocRef, { avatarSeed: newAvatarSeed }, { merge: true });
             }
-
-            // Add other update functions here (e.g., email, password)
 
             setSuccessMessage('All changes have been successfully saved!');
             setErrorMessage('');
