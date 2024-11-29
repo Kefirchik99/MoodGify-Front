@@ -118,19 +118,38 @@
     font-size: 0.9rem;
 }
 
+.password-validation-container {
+    margin-top: 8px;
+    width: 100%;
+}
+
 .password-bar {
-    margin-top: 4px;
-    height: 4px;
+    height: 5px;
     border-radius: 2px;
+    margin-top: 6px;
     transition: background-color 0.3s ease;
 }
 
 .password-bar.valid {
     background-color: #28a745;
-    /* Green for valid */
+    /* Green */
 }
 
 .password-bar.invalid {
     background-color: #dc3545;
-    /* Red for invalid */
+    /* Red */
+}
+
+.warning-text {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.password-rules {
+    margin-top: 10px;
+    padding-left: 20px;
+    font-size: 0.9rem;
+    color: #5c7080;
+    list-style-type: disc;
 }
