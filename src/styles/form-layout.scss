@@ -76,3 +76,61 @@
         }
     }
 }
+
+.password-rules-toggle {
+    margin-top: 5px;
+    /* Add spacing */
+    font-size: 0.85rem;
+    /* Smaller font for subtlety */
+    color: #106ba3;
+    /* Blueprint primary color */
+    background: none;
+    /* Remove default button background */
+    border: none;
+    /* Remove default border */
+    cursor: pointer;
+    /* Add pointer for interactivity */
+    padding: 0;
+    /* Remove extra padding */
+    text-align: left;
+    /* Align text to the left */
+}
+
+.password-rules-toggle:hover {
+    text-decoration: underline;
+    /* Add hover effect */
+}
+
+.password-rules-toggle:focus {
+    outline: none;
+
+}
+
+.password-rules {
+    margin-top: 10px;
+    /* Adjust margin above the list */
+    padding-left: 20px;
+    /* Indent the list */
+    list-style-type: disc;
+    /* Bullet points */
+    color: #5c7080;
+    /* Neutral gray color for readability */
+    font-size: 0.9rem;
+}
+
+.password-bar {
+    margin-top: 4px;
+    height: 4px;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.password-bar.valid {
+    background-color: #28a745;
+    /* Green for valid */
+}
+
+.password-bar.invalid {
+    background-color: #dc3545;
+    /* Red for invalid */
+}

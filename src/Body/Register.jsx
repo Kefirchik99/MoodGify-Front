@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import { InputGroup, Button } from '@blueprintjs/core';
+import { InputGroup, Button, Collapse } from '@blueprintjs/core';
 import { registerWithEmail } from '../services/firebaseAuth';
 import { Link } from 'react-router-dom';
 import AuthPage from './AuthPage';
 import '../styles/form-layout.scss';
+
+const passwordRules = [
+    "At least 8 characters long",
+    "Contains an uppercase letter",
+    "Contains a special character (!, @, #, etc.)",
+    "Contains a numeric digit (0-9)",
+];
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -12,6 +19,24 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [isPasswordRulesOpen, setIsPasswordRulesOpen] = useState(false); // State for the collapse
+    const [passwordValid, setPasswordValid] = useState(false); // Track password validity
+
+    const validatePassword = (password) => {
+        const rules = [
+            password.length >= 8, // Minimum length
+            /[A-Z]/.test(password), // At least one uppercase letter
+            /[!@#$%^&*]/.test(password), // At least one special character
+            /[0-9]/.test(password), // At least one numeric digit
+        ];
+        return rules.every(Boolean);
+    };
+
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        setPasswordValid(validatePassword(newPassword)); // Validate password and update state
+    };
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -57,8 +82,25 @@ const Register = () => {
                         placeholder="Enter your password"
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
                     />
+                    <div
+                        className={`password-bar ${passwordValid ? 'valid' : 'invalid'}`}
+                    ></div>
+                    <Button
+                        minimal
+                        intent="none"
+                        text={isPasswordRulesOpen ? "Hide Password Rules" : "Show Password Rules"}
+                        onClick={() => setIsPasswordRulesOpen(!isPasswordRulesOpen)}
+                        className="password-rules-toggle"
+                    />
+                    <Collapse isOpen={isPasswordRulesOpen}>
+                        <ul className="password-rules">
+                            {passwordRules.map((rule, index) => (
+                                <li key={index}>{rule}</li>
+                            ))}
+                        </ul>
+                    </Collapse>
                 </div>
                 <div className="form-group">
                     <InputGroup
