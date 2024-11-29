@@ -1,0 +1,34 @@
+.footer {
+    position: fixed;
+    /* Fix the footer to the bottom of the viewport */
+    bottom: 0;
+    /* Ensure it stays at the very bottom */
+    left: 0;
+    width: 100%;
+    /* Stretch across the entire width */
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    text-align: center;
+    border-top: 1px solid #e9ecef;
+    z-index: 1000;
+    /* Ensure it stays above other content */
+
+    .footer-links {
+        margin-bottom: 10px;
+
+        a {
+            margin: 0 10px;
+            color: #007bff;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .footer-text {
+        font-size: 14px;
+        color: #6c757d;
+    }
+}

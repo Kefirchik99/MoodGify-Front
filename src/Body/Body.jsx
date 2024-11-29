@@ -13,6 +13,8 @@ import CookieDeclined from './cookies/CookieDeclined';
 import Login from './Login';
 import WelcomePage from './WelcomePage';
 import ProtectedRoute from './ProtectedRoute';
+import CookieConsentAlert from './cookies/CookieConsentAlert';
+import Footer from '../Footer/Footer';
 import { useAuth } from '../providers/authContext';
 
 const Body = () => {
@@ -45,30 +47,34 @@ const Body = () => {
     };
 
     return (
-        <div className="content">
-            <Routes>
-                <Route path="/" element={<Navigate to="/home" replace />} />
-                <Route path="/home" element={<MainPage />} />
-                <Route path="/timeline" element={<PostCalendar />} />
-                <Route path="/login" element={<Login />} />
-                <Route
-                    path="/settings"
-                    element={
-                        <ProtectedRoute>
-                            <Settings />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route path="/register" element={<Register />} />
-                <Route path="/recover-password" element={<ForgotPwd />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/cookie-policy" element={<CookiePolicy />} />
-                <Route path="/cookie-declined" element={<CookieDeclined />} />
-                <Route path="/profile" element={renderProfileRoute()} />
-                <Route path="/welcome" element={renderWelcomeRoute()} />
-                <Route path="*" element={<Navigate to="/home" replace />} />
-            </Routes>
+        <div id="root">
+            <div className="content">
+                <CookieConsentAlert />
+                <Routes>
+                    <Route path="/" element={<Navigate to="/home" replace />} />
+                    <Route path="/home" element={<MainPage />} />
+                    <Route path="/timeline" element={<PostCalendar />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route
+                        path="/settings"
+                        element={
+                            <ProtectedRoute>
+                                <Settings />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/recover-password" element={<ForgotPwd />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/cookie-policy" element={<CookiePolicy />} />
+                    <Route path="/cookie-declined" element={<CookieDeclined />} />
+                    <Route path="/profile" element={renderProfileRoute()} />
+                    <Route path="/welcome" element={renderWelcomeRoute()} />
+                    <Route path="*" element={<Navigate to="/home" replace />} />
+                </Routes>
+            </div>
+            <Footer />
         </div>
     );
 };
