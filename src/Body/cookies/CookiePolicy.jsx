@@ -1,10 +1,10 @@
 import React from 'react';
 import { Callout } from '@blueprintjs/core';
-// import '../styles/CookiePolicy.scss'; // Your custom styling
+import '../../styles/Policies.scss';
 
 const CookiePolicy = () => {
     return (
-        <div className="cookie-policy-page">
+        <div className="policy-page">
             <h1>Cookie Policy</h1>
             <Callout intent="primary" title="What are Cookies?">
                 <p>
