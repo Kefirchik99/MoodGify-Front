@@ -1,4 +1,4 @@
-.privacy-policy-page {
+.policy-page {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
@@ -15,5 +15,39 @@
         font-size: 16px;
         line-height: 1.6;
         color: #333;
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-left: 20px;
+
+        li {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+    }
+}
+
+.cookie-declined-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8d7da;
+    /* Light red for error */
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #721c24;
+        /* Dark red for title */
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #721c24;
     }
 }

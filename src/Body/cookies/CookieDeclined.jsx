@@ -1,5 +1,6 @@
 import React from 'react';
 import { Callout } from '@blueprintjs/core';
+import '../../styles/Policies.scss';
 
 const CookieDeclined = () => {
     return (
