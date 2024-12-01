@@ -1,5 +1,3 @@
-// UsernameSettings.jsx
-
 import React from 'react';
 import { InputGroup } from '@blueprintjs/core';
 import { useAuth } from '../../providers/authContext';
@@ -22,7 +20,6 @@ const UsernameSettings = ({ newUsername, setNewUsername }) => {
                 onChange={(e) => setNewUsername(e.target.value)}
                 placeholder="Enter new username"
             />
-            {/* Note: No need to add password input here since it's handled in Settings */}
         </div>
     );
 };
