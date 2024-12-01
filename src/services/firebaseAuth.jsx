@@ -1,63 +1,76 @@
-// firebaseAuth.js
-
-import { auth, db } from '../firebase';
+import { auth, db } from '../firebase'; // Import Firestore and Auth instances
 import {
     createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
     sendEmailVerification,
+    sendPasswordResetEmail,
     EmailAuthProvider,
     reauthenticateWithCredential,
-    updatePassword,
-    updateEmail,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Filter } from 'bad-words';
 
+// Initialize bad-words filter
 const filter = new Filter();
 
-// Check if the username is already taken
+/**
+ * Check if a username is available.
+ * @param {string} username
+ * @returns {Promise<boolean>} True if username is available, otherwise false.
+ */
 export const checkUsernameAvailability = async (username) => {
     const docRef = doc(db, 'usernames', username);
     const docSnap = await getDoc(docRef);
     return !docSnap.exists();
 };
 
-// Save the username to Firestore
+/**
+ * Save a username to Firestore.
+ * @param {string} uid - User ID.
+ * @param {string} username - Chosen username.
+ */
 export const saveUsername = async (uid, username) => {
+    // Save the username and link it to the user's UID
     await setDoc(doc(db, 'usernames', username), { uid });
+    // Merge the username into the user's Firestore document
     await setDoc(doc(db, 'users', uid), { username }, { merge: true });
 };
 
-// Register a new user and save the username
+/**
+ * Register a user with email, password, and username.
+ * @param {string} email
+ * @param {string} password
+ * @param {string} username
+ * @returns {Promise<object>} The created user object.
+ */
 export const registerWithEmail = async (email, password, username) => {
-    if (filter.isProfane(username)) {
-        throw new Error('Please choose a more appropriate username.');
-    }
-
-    const isAvailable = await checkUsernameAvailability(username);
-    if (!isAvailable) {
-        throw new Error('Username is already taken. Please choose another.');
-    }
-
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    await sendEmailVerification(user);
-    await saveUsername(user.uid, username);
-    return user;
-};
-
-// Send a password reset email
-export const sendPasswordReset = async (email) => {
     try {
-        await sendPasswordResetEmail(auth, email);
-        return 'Password reset email sent!';
+        if (filter.isProfane(username)) {
+            throw new Error('Please choose a more appropriate username.');
+        }
+
+        const isAvailable = await checkUsernameAvailability(username);
+        if (!isAvailable) {
+            throw new Error('Username is already taken. Please choose another.');
+        }
+
+        // Create the user and send email verification
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await sendEmailVerification(user);
+        // Save the username to Firestore
+        await saveUsername(user.uid, username);
+
+        return user;
     } catch (error) {
-        console.error('Error sending password reset email:', error.message);
-        throw new Error('Failed to send password reset email.');
+        throw error;
     }
 };
 
-// Reauthenticate the user
+/**
+ * Reauthenticate a user with their current password.
+ * @param {string} currentPassword
+ */
 export const reauthenticate = async (currentPassword) => {
     const user = auth.currentUser;
     if (!user) {
@@ -67,60 +80,20 @@ export const reauthenticate = async (currentPassword) => {
     try {
         await reauthenticateWithCredential(user, credential);
     } catch (error) {
-        console.error('Reauthentication failed:', error.message);
         throw new Error('Incorrect current password. Please try again.');
     }
 };
 
-// Change user password
-export const changePassword = async (currentPassword, newPassword) => {
-    await reauthenticate(currentPassword);
+/**
+ * Send a password reset email.
+ * @param {string} email
+ * @returns {Promise<string>} Confirmation message.
+ */
+export const sendPasswordReset = async (email) => {
     try {
-        await updatePassword(auth.currentUser, newPassword);
-        return 'Password updated successfully!';
+        await sendPasswordResetEmail(auth, email);
+        return 'Password reset email sent!';
     } catch (error) {
-        console.error('Failed to update password:', error.message);
-        throw new Error('Failed to update password.');
-    }
-};
-
-// Change user email
-export const changeEmail = async (currentPassword, newEmail) => {
-    await reauthenticate(currentPassword);
-    try {
-        await updateEmail(auth.currentUser, newEmail);
-        return 'Email updated successfully!';
-    } catch (error) {
-        console.error('Failed to update email:', error.message);
-        throw new Error('Failed to update email.');
-    }
-};
-
-// **Add the changeUserName function here**
-export const changeUserName = async (uid, newUsername, currentUserName) => {
-    try {
-        // Check for profanity
-        if (filter.isProfane(newUsername)) {
-            throw new Error('Please choose a more appropriate username.');
-        }
-
-        // Check if the new username is available
-        const isAvailable = await checkUsernameAvailability(newUsername);
-        if (!isAvailable) {
-            throw new Error('Username is already taken. Please choose another.');
-        }
-
-        // Update the username in the 'users' collection
-        await setDoc(doc(db, 'users', uid), { username: newUsername }, { merge: true });
-
-        // Update the 'usernames' collection
-        if (currentUserName) {
-            const oldUsernameDocRef = doc(db, 'usernames', currentUserName);
-            await deleteDoc(oldUsernameDocRef);
-        }
-        await setDoc(doc(db, 'usernames', newUsername), { uid });
-    } catch (error) {
-        console.error('Error changing username:', error.message);
-        throw new Error(error.message || 'Failed to change username.');
+        throw new Error('Failed to send password reset email.');
     }
 };

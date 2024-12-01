@@ -34,11 +34,9 @@ const Register = () => {
 
         try {
             await registerWithEmail(email, password, username);
-            setSuccessMessage(
-                'Registration successful! Please check your email to verify your account.'
-            );
+            setSuccessMessage('Registration successful! Please verify your email.');
         } catch (err) {
-            setErrorMessage(err.message);
+            setErrorMessage(err.message || 'An error occurred during registration.');
         }
     };
 
@@ -55,6 +53,7 @@ const Register = () => {
                         placeholder="Choose a username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        autoComplete="username"
                     />
                 </div>
                 <div className="form-group">
@@ -64,6 +63,7 @@ const Register = () => {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
                     />
                 </div>
                 <div className="form-group">
@@ -73,9 +73,9 @@ const Register = () => {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="new-password"
                     />
                     <PasswordValidationBar password={password} rules={passwordRules} />
-
                     <Collapse isOpen={isPasswordRulesOpen}>
                         <ul className="password-rules">
                             {passwordRules.map((rule, index) => (
@@ -91,6 +91,7 @@ const Register = () => {
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        autoComplete="new-password"
                     />
                     <PasswordValidationBar
                         password={password}
