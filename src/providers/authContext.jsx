@@ -87,6 +87,7 @@ export const AuthProvider = ({ children }) => {
                 user,
                 loading,
                 avatarSeed,
+                setAvatarSeed,
                 username,
                 loginWithEmail,
                 logout,
