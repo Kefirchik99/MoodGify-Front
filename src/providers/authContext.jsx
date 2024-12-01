@@ -1,7 +1,7 @@
 import { useContext, createContext, useEffect, useState } from 'react';
 import { auth, db } from '../firebase'; // Ensure proper import paths
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, updatePassword } from 'firebase/auth';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { reauthenticate } from '../services/firebaseAuth'; // Ensure correct export from firebaseAuth.jsx
 
 const AuthContext = createContext();
@@ -81,6 +81,44 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const changeUserPassword = async (newPassword) => {
+        if (!auth.currentUser) {
+            throw new Error('No user is currently logged in.');
+        }
+        try {
+            await updatePassword(auth.currentUser, newPassword);
+        } catch (error) {
+            console.error('Error updating password:', error.message);
+            throw error;
+        }
+    };
+
+    const updateUserName = async (newUsername, currentUsername) => {
+        if (!auth.currentUser) {
+            throw new Error('No user is currently logged in.');
+        }
+        try {
+            // Delete the old username document if it exists
+            if (currentUsername) {
+                const oldUsernameDocRef = doc(db, 'usernames', currentUsername);
+                await deleteDoc(oldUsernameDocRef);
+            }
+            // Save the new username
+            const newUsernameDocRef = doc(db, 'usernames', newUsername);
+            await setDoc(newUsernameDocRef, { uid: user.uid });
+
+            // Update the username in the user's Firestore document
+            const userDocRef = doc(db, 'users', user.uid);
+            await setDoc(userDocRef, { username: newUsername }, { merge: true });
+
+            // Update local state
+            setUsername(newUsername);
+        } catch (error) {
+            console.error('Error updating username:', error.message);
+            throw error;
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -91,6 +129,8 @@ export const AuthProvider = ({ children }) => {
                 username,
                 loginWithEmail,
                 logout,
+                changeUserPassword, // Function for updating password
+                updateUserName, // Function for updating username
                 reauthenticateUser: reauthenticate, // Pass reauthenticate function
                 hasSeenWelcome,
                 setHasSeenWelcome,

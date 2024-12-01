@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { InputGroup } from '@blueprintjs/core';
-import { useAuth } from '../../providers/authContext';
 
-const PasswordSettings = () => {
-    const { changeUserPassword } = useAuth();
-    const [newPassword, setNewPassword] = useState('');
-
-    const handlePasswordChange = async () => {
-        try {
-            await changeUserPassword(newPassword);
-            alert('Password updated successfully!');
-        } catch (error) {
-            alert('Failed to update password.');
-        }
+const PasswordSettings = ({ passwordDetails, setPasswordDetails }) => {
+    const handlePasswordChange = (e) => {
+        setPasswordDetails((prev) => ({
+            ...prev,
+            newPassword: e.target.value,
+        }));
     };
 
     return (
@@ -21,8 +15,8 @@ const PasswordSettings = () => {
             <InputGroup
                 id="new-password-input"
                 type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                value={passwordDetails.newPassword}
+                onChange={handlePasswordChange}
                 placeholder="Enter new password"
             />
         </div>

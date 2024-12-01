@@ -35,6 +35,12 @@ const Register = () => {
         try {
             await registerWithEmail(email, password, username);
             setSuccessMessage('Registration successful! Please verify your email.');
+
+            // Clear the input fields
+            setUsername('');
+            setEmail('');
+            setPassword('');
+            setConfirmPassword('');
         } catch (err) {
             setErrorMessage(err.message || 'An error occurred during registration.');
         }
