@@ -1,6 +1,6 @@
 import { useContext, createContext, useEffect, useState } from 'react';
 import { auth, db } from '../firebase'; // Ensure proper import paths
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, updatePassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { reauthenticate } from '../services/firebaseAuth'; // Ensure correct export from firebaseAuth.jsx
 
@@ -81,6 +81,18 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const changeUserPassword = async (newPassword) => {
+        if (!auth.currentUser) {
+            throw new Error('No user is currently logged in.');
+        }
+        try {
+            await updatePassword(auth.currentUser, newPassword);
+        } catch (error) {
+            console.error('Error updating password:', error.message);
+            throw error;
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -91,6 +103,7 @@ export const AuthProvider = ({ children }) => {
                 username,
                 loginWithEmail,
                 logout,
+                changeUserPassword, // Function for updating password
                 reauthenticateUser: reauthenticate, // Pass reauthenticate function
                 hasSeenWelcome,
                 setHasSeenWelcome,

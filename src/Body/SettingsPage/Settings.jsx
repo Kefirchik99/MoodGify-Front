@@ -6,6 +6,7 @@ import EmailSettings from './EmailSettings';
 import PasswordSettings from './PasswordSettings';
 import { useAuth } from '../../providers/authContext';
 import { doc, setDoc } from 'firebase/firestore';
+import { updatePassword } from 'firebase/auth'; // Import updatePassword
 import { db } from '../../firebase';
 import { Navigate } from 'react-router-dom';
 import "../../styles/Settings.scss";
@@ -18,6 +19,7 @@ const Settings = () => {
     const [newUsername, setNewUsername] = useState('');
     const [currentUsername, setCurrentUsername] = useState('');
     const [newAvatarSeed, setNewAvatarSeed] = useState(null);
+    const [passwordDetails, setPasswordDetails] = useState({ newPassword: '' });
 
     if (!user) {
         return <Navigate to="/login" replace />;
@@ -25,6 +27,9 @@ const Settings = () => {
 
     const handleMakeChanges = async (e) => {
         e.preventDefault();
+        setSuccessMessage('');
+        setErrorMessage('');
+
         if (!currentPassword.trim()) {
             setErrorMessage('Current password is required to make changes.');
             return;
@@ -46,8 +51,18 @@ const Settings = () => {
                 await setDoc(userDocRef, { avatarSeed: newAvatarSeed }, { merge: true });
             }
 
+            // Update Password if provided
+            if (passwordDetails.newPassword.trim()) {
+                if (passwordDetails.newPassword.length < 8) {
+                    setErrorMessage('Password must be at least 8 characters long.');
+                    return;
+                }
+                // Use Firebase's updatePassword method on the currently authenticated user
+                await updatePassword(user, passwordDetails.newPassword);
+            }
+
             setSuccessMessage('All changes have been successfully saved!');
-            setErrorMessage('');
+            setPasswordDetails({ newPassword: '' }); // Clear password input
         } catch (error) {
             console.error('Error updating settings:', error.message);
             setErrorMessage(error.message || 'Failed to make changes.');
@@ -69,7 +84,10 @@ const Settings = () => {
             <Divider className="settings-divider" />
             <EmailSettings />
             <Divider className="settings-divider" />
-            <PasswordSettings />
+            <PasswordSettings
+                passwordDetails={passwordDetails}
+                setPasswordDetails={setPasswordDetails}
+            />
             <Divider className="settings-divider" />
             <form onSubmit={handleMakeChanges} className="settings-form">
                 <div className="current-password-section">
