@@ -1,8 +1,8 @@
 import { useContext, createContext, useEffect, useState } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase'; // Ensure proper import paths
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { reauthenticate } from '../services/firebaseAuth'; // Ensure correct export from firebaseAuth.jsx
 
 const AuthContext = createContext();
 const INACTIVITY_TIMEOUT = 20 * 60 * 1000; // 20 minutes
@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
     const resetInactivityTimer = () => {
         clearTimeout(logoutTimer);
         logoutTimer = setTimeout(handleAutoLogout, INACTIVITY_TIMEOUT);
-        localStorage.setItem('lastActivity', Date.now());
     };
 
     const handleAutoLogout = async () => {
@@ -27,48 +26,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const handleActivity = () => {
-            resetInactivityTimer();
-        };
-
-        const handleBeforeUnload = (event) => {
-            // Detect if the browser is being refreshed or closed
-            sessionStorage.setItem('isRefreshing', 'true');
-        };
-
-        const handlePageLoad = () => {
-            const isRefreshing = sessionStorage.getItem('isRefreshing');
-            if (isRefreshing) {
-                sessionStorage.removeItem('isRefreshing');
-                // Prevent auto-logout on refresh
-                return;
-            }
-            handleAutoLogout();
-        };
-
-        window.addEventListener('mousemove', handleActivity);
-        window.addEventListener('keypress', handleActivity);
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        window.addEventListener('load', handlePageLoad);
+        const handleActivity = resetInactivityTimer;
 
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
                 try {
                     const userDocRef = doc(db, 'users', currentUser.uid);
-                    const docSnap = await getDoc(userDocRef);
-                    if (docSnap.exists()) {
-                        const userData = docSnap.data();
-                        setAvatarSeed(userData.avatarSeed || currentUser.uid);
-                        setUsername(userData.username || '');
-                    } else {
-                        setAvatarSeed(currentUser.uid);
-                        setUsername('');
-                    }
+                    const userData = (await getDoc(userDocRef)).data() || {};
+                    setAvatarSeed(userData.avatarSeed || currentUser.uid);
+                    setUsername(userData.username || '');
                 } catch (error) {
                     console.error('Error fetching user data:', error.message);
-                    setAvatarSeed(currentUser.uid);
-                    setUsername('');
                 }
                 resetInactivityTimer();
             } else {
@@ -79,12 +48,13 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         });
 
+        window.addEventListener('mousemove', handleActivity);
+        window.addEventListener('keypress', handleActivity);
+
         return () => {
             clearTimeout(logoutTimer);
             window.removeEventListener('mousemove', handleActivity);
             window.removeEventListener('keypress', handleActivity);
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-            window.removeEventListener('load', handlePageLoad);
             unsubscribe();
         };
     }, []);
@@ -95,7 +65,7 @@ export const AuthProvider = ({ children }) => {
             setUser(userCredential.user);
             setHasSeenWelcome(false);
         } catch (error) {
-            console.error('Error during login:', error.message);
+            console.error('Login error:', error.message);
             throw new Error('Failed to log in. Please check your credentials.');
         }
     };
@@ -104,12 +74,9 @@ export const AuthProvider = ({ children }) => {
         try {
             await signOut(auth);
             setUser(null);
-            setHasSeenWelcome(false);
-            setAvatarSeed(null);
-            setUsername(null);
             clearTimeout(logoutTimer);
         } catch (error) {
-            console.error('Error during logout:', error.message);
+            console.error('Logout error:', error.message);
             throw new Error('Failed to log out.');
         }
     };
@@ -120,9 +87,11 @@ export const AuthProvider = ({ children }) => {
                 user,
                 loading,
                 avatarSeed,
+                setAvatarSeed,
                 username,
                 loginWithEmail,
                 logout,
+                reauthenticateUser: reauthenticate, // Pass reauthenticate function
                 hasSeenWelcome,
                 setHasSeenWelcome,
             }}

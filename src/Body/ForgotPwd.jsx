@@ -11,18 +11,19 @@ const ForgotPwd = () => {
 
     const handlePasswordReset = async (e) => {
         e.preventDefault();
-        if (!email) {
-            setError('Please enter your email.');
+        setMessage('');
+        setError('');
+
+        if (!email.trim()) {
+            setError('Please enter a valid email address.');
             return;
         }
 
         try {
-            await sendPasswordReset(email);
-            setMessage('Password reset email sent!');
-            setError('');
+            await sendPasswordReset(email.trim());
+            setMessage('Password reset email has been sent. Please check your inbox.');
         } catch (err) {
-            setError(err.message);
-            setMessage('');
+            setError('Failed to send password reset email. Please try again.');
         }
     };
 
@@ -35,12 +36,22 @@ const ForgotPwd = () => {
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
                     />
                 </div>
-                <Button type="submit" className="form-button" intent="primary" text="Send Reset Email" />
+                <Button
+                    type="submit"
+                    className="form-button"
+                    intent="primary"
+                    text="Send Reset Email"
+                />
             </form>
             <div className="extra-links">
-                <Button minimal intent="primary" onClick={() => window.history.back()}>
+                <Button
+                    minimal
+                    intent="primary"
+                    onClick={() => window.history.back()}
+                >
                     Back to Login
                 </Button>
             </div>
