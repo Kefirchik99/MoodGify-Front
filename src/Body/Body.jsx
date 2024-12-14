@@ -10,6 +10,7 @@ import Terms from './Terms';
 import PrivacyPolicy from './PrivacyPolicy';
 import CookiePolicy from './cookies/CookiePolicy';
 import CookieDeclined from './cookies/CookieDeclined';
+
 import Login from './Login';
 import WelcomePage from './WelcomePage';
 import ProtectedRoute from './ProtectedRoute';

@@ -4,6 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { fetchGifsByMood } from '../services/api';
 import '../styles/MainPage.scss';
+import CryptoCard from './CryptoCard';
+import MarketDataBlock from './MarketDataBlock';
+import CryptoDetailsBlock from './CryptoDetailsBlock';
+import AchievementList from "./AchievementList";
+import AchievementDetail from "./AchievementDetail";
 
 const MainPage = () => {
     const [mood, setMood] = useState('');
@@ -36,8 +41,37 @@ const MainPage = () => {
         );
     };
 
+    const [selectedAchievement, setSelectedAchievement] = useState(null);
+
+    const handleSelectAchievement = (achievement) => {
+        setSelectedAchievement(achievement);
+    };
+
+    const handleBack = () => {
+        setSelectedAchievement(null);
+    };
+
     return (
         <div className="mood-to-gif">
+            <div>
+            {selectedAchievement ? (
+                <AchievementDetail
+                achievement={selectedAchievement}
+                onBack={handleBack}
+                />
+            ) : (
+                <AchievementList onSelectAchievement={handleSelectAchievement} />
+            )}
+            </div>
+            
+            <CryptoDetailsBlock coinId="btc-bitcoin" />
+            {/* <CryptoDetailsBlock coinId="eth-ethereum" /> */}
+
+            <CryptoCard coinId="btc-bitcoin" />
+
+            <MarketDataBlock coinId="btc-bitcoin" />
+            {/* <MarketDataBlock coinId="eth-ethereum" /> */}
+
             <div className="mood-input">
                 <InputGroup
                     leftIcon="emoji"
